@@ -1,20 +1,22 @@
--- YOUSEF HUB 🔴
+-- ===== YJW HUB =====
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local old = playerGui:FindFirstChild("YousefHub")
+local HUB_NAME = "YJW HUB"
+local TELEGRAM = "https://t.me/YJW_m"
+
+local old = playerGui:FindFirstChild("YJW_Hub")
 if old then old:Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "YousefHub"
+ScreenGui.Name = "YJW_Hub"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = playerGui
 
--- ===== الإطار الرئيسي =====
+-- الإطار الرئيسي
 local Main = Instance.new("Frame")
 Main.Size = UDim2.new(0, 560, 0, 340)
 Main.Position = UDim2.new(0.5, -280, 0.5, -170)
@@ -25,7 +27,7 @@ Main.Draggable = true
 Main.Parent = ScreenGui
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
--- ===== الهيدر =====
+-- الهيدر
 local Header = Instance.new("Frame")
 Header.Size = UDim2.new(1, 0, 0, 40)
 Header.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
@@ -37,7 +39,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -50, 1, 0)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "YOUSEF HUB"
+Title.Text = HUB_NAME
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
@@ -56,7 +58,7 @@ CloseBtn.Parent = Header
 Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
 CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
--- ===== يسار (تبويبات) =====
+-- الأعمدة
 local LeftTabs = Instance.new("Frame")
 LeftTabs.Size = UDim2.new(0, 110, 1, -50)
 LeftTabs.Position = UDim2.new(0, 5, 0, 45)
@@ -65,7 +67,6 @@ LeftTabs.Parent = Main
 local LL = Instance.new("UIListLayout", LeftTabs)
 LL.Padding = UDim.new(0, 5)
 
--- ===== يمين (أزرار) =====
 local RightBtns = Instance.new("Frame")
 RightBtns.Size = UDim2.new(0, 110, 1, -50)
 RightBtns.Position = UDim2.new(1, -115, 0, 45)
@@ -74,7 +75,6 @@ RightBtns.Parent = Main
 local RL = Instance.new("UIListLayout", RightBtns)
 RL.Padding = UDim.new(0, 5)
 
--- ===== المحتوى =====
 local Content = Instance.new("Frame")
 Content.Size = UDim2.new(1, -235, 1, -50)
 Content.Position = UDim2.new(0, 120, 0, 45)
@@ -95,7 +95,7 @@ Scroll.Parent = Content
 local CL = Instance.new("UIListLayout", Scroll)
 CL.Padding = UDim.new(0, 8)
 
--- ===== دالة إنشاء زر التبويب =====
+-- دوال مساعدة
 local function makeTab(parent, text, cb)
     local b = Instance.new("TextButton")
     b.Size = UDim2.new(1, 0, 0, 40)
@@ -109,7 +109,6 @@ local function makeTab(parent, text, cb)
     b.MouseButton1Click:Connect(cb)
 end
 
--- ===== دالة إنشاء Toggle =====
 local function makeToggle(parent, text, default, cb)
     local f = Instance.new("Frame")
     f.Size = UDim2.new(1, -10, 0, 45)
@@ -153,7 +152,6 @@ local function makeToggle(parent, text, default, cb)
     end)
 end
 
--- ===== دالة إنشاء زر =====
 local function makeBtn(parent, text, cb)
     local b = Instance.new("TextButton")
     b.Size = UDim2.new(1, -10, 0, 40)
@@ -167,7 +165,6 @@ local function makeBtn(parent, text, cb)
     b.MouseButton1Click:Connect(cb)
 end
 
--- ===== الصفحات =====
 local function newPage()
     local p = Instance.new("Frame")
     p.Size = UDim2.new(1, 0, 0, 0)
@@ -180,10 +177,11 @@ local function newPage()
     return p
 end
 
+-- الصفحات
 local FarmPage = newPage()
 local PlayerPage = newPage()
-local SettingsPage = newPage()
-local pages = {FarmPage, PlayerPage, SettingsPage}
+local InfoPage = newPage()
+local pages = {FarmPage, PlayerPage, InfoPage}
 
 local function show(p)
     for _, x in pairs(pages) do x.Visible = false end
@@ -192,9 +190,11 @@ end
 
 makeTab(LeftTabs, "Farm", function() show(FarmPage) end)
 makeTab(LeftTabs, "Player", function() show(PlayerPage) end)
-makeTab(LeftTabs, "Settings", function() show(SettingsPage) end)
-makeTab(RightBtns, "Discord", function() setclipboard("https://discord.gg/yousef") end)
-makeTab(RightBtns, "Config", function() end)
+makeTab(LeftTabs, "Info", function() show(InfoPage) end)
+makeTab(RightBtns, "Telegram", function()
+    setclipboard(TELEGRAM)
+end)
+makeTab(RightBtns, "Close", function() ScreenGui:Destroy() end)
 
 show(FarmPage)
 
@@ -204,25 +204,11 @@ makeToggle(FarmPage, "Steal Missing Index Eggs", false, function(v) end)
 makeToggle(FarmPage, "Auto Place Egg", false, function(v) end)
 
 -- ===== Player =====
-local speed = 16
-local jump = 50
 _G.infJump = false
-_G.fly = false
 _G.noclip = false
 
 makeToggle(PlayerPage, "Infinite Jump", false, function(v) _G.infJump = v end)
-makeToggle(PlayerPage, "Fly", false, function(v) _G.fly = v end)
 makeToggle(PlayerPage, "Noclip", false, function(v) _G.noclip = v end)
-
-task.spawn(function()
-    while task.wait(0.1) do
-        local c = player.Character
-        if c then
-            local h = c:FindFirstChildOfClass("Humanoid")
-            if h then h.WalkSpeed = speed; h.JumpPower = jump end
-        end
-    end
-end)
 
 UIS.JumpRequest:Connect(function()
     if _G.infJump then
@@ -241,39 +227,11 @@ RunService.Stepped:Connect(function()
     end
 end)
 
-task.spawn(function()
-    while task.wait() do
-        if _G.fly then
-            local c = player.Character
-            if c then
-                local hrp = c:FindFirstChild("HumanoidRootPart")
-                if hrp and not hrp:FindFirstChild("YF") then
-                    local g = Instance.new("BodyGyro", hrp); g.Name = "YF"
-                    g.P = 9e4; g.MaxTorque = Vector3.new(9e9,9e9,9e9); g.CFrame = hrp.CFrame
-                    local v = Instance.new("BodyVelocity", hrp); v.Name = "YFV"
-                    v.Velocity = Vector3.new(0,0,0); v.MaxForce = Vector3.new(9e9,9e9,9e9)
-                end
-                if hrp then
-                    local g = hrp:FindFirstChild("YF")
-                    local v = hrp:FindFirstChild("YFV")
-                    if g and v then
-                        local cam = workspace.CurrentCamera
-                        local m = Vector3.new(0,0,0)
-                        if UIS:IsKeyDown(Enum.KeyCode.W) then m = m + cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.S) then m = m - cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.A) then m = m - cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.D) then m = m + cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.Space) then m = m + Vector3.new(0,1,0) end
-                        v.Velocity = m * 50
-                    end
-                end
-            end
-        end
-    end
+-- ===== Info =====
+makeBtn(InfoPage, "نسخ رابط قناتي", function()
+    setclipboard(TELEGRAM)
 end)
+makeBtn(InfoPage, "إغلاق", function() ScreenGui:Destroy() end)
 
--- ===== Settings =====
-makeBtn(SettingsPage, "Copy Discord", function() setclipboard("https://discord.gg/yousef") end)
-makeBtn(SettingsPage, "Close UI", function() ScreenGui:Destroy() end)
-
-print("YOUSEF HUB Loaded ✅")
+print("YJW HUB Loaded ✅")
+print("Telegram: " .. TELEGRAM)
