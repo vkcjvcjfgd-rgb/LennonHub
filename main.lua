@@ -1,46 +1,46 @@
--- مطور يوسف HUB
+-- YOUSEF EGG HUB 🥚
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "مطور يوسف",
-    LoadingTitle = "مطور يوسف HUB",
-    LoadingSubtitle = "Welcome",
+    Name = "YOUSEF EGG HUB",
+    LoadingTitle = "YOUSEF EGG HUB",
+    LoadingSubtitle = "Steal an Egg Script",
     ConfigurationSaving = { Enabled = false },
     KeySystem = false,
 })
 
--- ===== تبويب الرئيسية =====
+local player = game.Players.LocalPlayer
+
+-- =========================================
+-- 🏠 تبويب الرئيسية
+-- =========================================
 local MainTab = Window:CreateTab("الرئيسية", nil)
 
 local speedValue = 16
 MainTab:CreateSlider({
     Name = "السرعة",
-    Range = {16, 200},
+    Range = {16, 250},
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = 16,
     Flag = "SpeedSlider",
-    Callback = function(value)
-        speedValue = value
-    end,
+    Callback = function(v) speedValue = v end,
 })
 
 local jumpValue = 50
 MainTab:CreateSlider({
     Name = "القفز",
-    Range = {50, 300},
+    Range = {50, 500},
     Increment = 5,
     Suffix = "Power",
     CurrentValue = 50,
     Flag = "JumpSlider",
-    Callback = function(value)
-        jumpValue = value
-    end,
+    Callback = function(v) jumpValue = v end,
 })
 
 task.spawn(function()
     while task.wait(0.1) do
-        local char = game.Players.LocalPlayer.Character
+        local char = player.Character
         if char then
             local hum = char:FindFirstChildOfClass("Humanoid")
             if hum then
@@ -52,183 +52,293 @@ task.spawn(function()
     end
 end)
 
--- ===== تبويب ESP (يشوف البيض) =====
-local EspTab = Window:CreateTab("ESP البيض", nil)
+-- Infinite Jump
+local infJump = false
+MainTab:CreateToggle({
+    Name = "قفز لا نهائي",
+    CurrentValue = false,
+    Flag = "InfJump",
+    Callback = function(v) infJump = v end,
+})
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if infJump then
+        local char = player.Character
+        if char and char:FindFirstChildOfClass("Humanoid") then
+            char:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+        end
+    end
+end)
+
+-- =========================================
+-- 🥚 تبويب البيض
+-- =========================================
+local EggTab = Window:CreateTab("البيض", nil)
 
 local espEnabled = false
 local espList = {}
 
-local function createEsp(part, infoText)
-    if espList[part] then return end
-    
-    local billboard = Instance.new("BillboardGui")
-    billboard.Name = "YousefESP"
-    billboard.Size = UDim2.new(0, 200, 0, 60)
-    billboard.StudsOffset = Vector3.new(0, 3, 0)
-    billboard.AlwaysOnTop = true
-    billboard.Parent = part
-    
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 0.3
-    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    label.TextColor3 = Color3.fromRGB(255, 255, 0)
-    label.TextStrokeTransparency = 0
-    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 14
-    label.Text = infoText
-    label.Parent = billboard
-    
-    espList[part] = billboard
-end
-
-local function removeAllEsp()
-    for part, gui in pairs(espList) do
-        if gui and gui.Parent then
-            gui:Destroy()
-        end
+local function clearESP()
+    for _, gui in pairs(espList) do
+        if gui and gui.Parent then gui:Destroy() end
     end
     espList = {}
 end
 
+local function createESP(part, text)
+    if espList[part] then return end
+    local bb = Instance.new("BillboardGui")
+    bb.Size = UDim2.new(0, 200, 0, 50)
+    bb.StudsOffset = Vector3.new(0, 3, 0)
+    bb.AlwaysOnTop = true
+    bb.Parent = part
+    
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, 0, 1, 0)
+    lbl.BackgroundTransparency = 0.3
+    lbl.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    lbl.TextColor3 = Color3.fromRGB(255, 255, 0)
+    lbl.TextStrokeTransparency = 0
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextSize = 14
+    lbl.Text = text
+    lbl.Parent = bb
+    espList[part] = bb
+end
+
 local function scanEggs()
     for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") or obj:IsA("Model") then
-            local name = string.lower(obj.Name)
-            -- يدور على أي شي اسمه بيضة أو egg
-            if string.find(name, "egg") or string.find(name, "بيض") then
+        if obj:IsA("Model") or obj:IsA("BasePart") then
+            local n = string.lower(obj.Name)
+            if string.find(n, "egg") or string.find(n, "بيض") then
                 local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart")
                 if part and not espList[part] then
-                    -- يحاول يقرأ محتوى البيضة من الـ Attributes أو StringValue
-                    local eggName = obj.Name
-                    local valueText = "؟"
-                    
-                    -- يدور على Value داخل البيضة
-                    for _, child in pairs(obj:GetChildren()) do
-                        if child:IsA("StringValue") or child:IsA("NumberValue") then
-                            valueText = tostring(child.Value)
+                    local info = "🥚 " .. obj.Name
+                    for _, c in pairs(obj:GetDescendants()) do
+                        if c:IsA("StringValue") or c:IsA("NumberValue") then
+                            info = info .. "\n💰 " .. tostring(c.Value)
                             break
                         end
-                        if child:IsA("Model") or child:IsA("BasePart") then
-                            valueText = child.Name
-                        end
                     end
-                    
-                    createEsp(part, "🥚 " .. eggName .. "\n💰 " .. valueText)
+                    createESP(part, info)
                 end
             end
         end
     end
 end
 
-EspTab:CreateToggle({
-    Name = "تشغيل ESP البيض",
+EggTab:CreateToggle({
+    Name = "ESP البيض",
     CurrentValue = false,
-    Flag = "EspToggle",
-    Callback = function(value)
-        espEnabled = value
-        if not value then
-            removeAllEsp()
-        end
+    Flag = "EggESP",
+    Callback = function(v)
+        espEnabled = v
+        if not v then clearESP() end
     end,
 })
 
-EspTab:CreateButton({
-    Name = "تحديث البيض",
+EggTab:CreateButton({
+    Name = "🔍 تحديث البيض",
     Callback = function()
-        removeAllEsp()
+        clearESP()
         scanEggs()
     end,
 })
 
--- Loop يحدّث ESP
 task.spawn(function()
     while task.wait(2) do
-        if espEnabled then
-            scanEggs()
+        if espEnabled then scanEggs() end
+    end
+end)
+
+-- Teleport لأقرب بيضة
+local function getClosestEgg()
+    local char = player.Character
+    if not char then return nil end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
+    
+    local closest, dist = nil, math.huge
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            local n = string.lower(obj.Name)
+            if string.find(n, "egg") or string.find(n, "بيض") then
+                local d = (obj.Position - hrp.Position).Magnitude
+                if d < dist then dist = d; closest = obj end
+            end
+        end
+    end
+    return closest
+end
+
+EggTab:CreateButton({
+    Name = "🚀 اذهب لأقرب بيضة",
+    Callback = function()
+        local egg = getClosestEgg()
+        if egg and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = egg.CFrame + Vector3.new(0, 3, 0)
+            Rayfield:Notify({ Title = "YOUSEF HUB", Content = "تم الانتقال!", Duration = 2 })
+        end
+    end,
+})
+
+-- سرقة تلقائية
+local autoSteal = false
+EggTab:CreateToggle({
+    Name = "🥷 سرقة تلقائية",
+    CurrentValue = false,
+    Flag = "AutoSteal",
+    Callback = function(v) autoSteal = v end,
+})
+
+task.spawn(function()
+    while task.wait(1) do
+        if autoSteal then
+            local egg = getClosestEgg()
+            if egg and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                pcall(function()
+                    player.Character.HumanoidRootPart.CFrame = egg.CFrame
+                end)
+            end
         end
     end
 end)
 
--- ===== تبويب الطيران =====
-local FlyTab = Window:CreateTab("الطيران", nil)
+-- =========================================
+-- 🎮 تبويب اللاعب
+-- =========================================
+local PlayerTab = Window:CreateTab("اللاعب", nil)
 
+-- Fly
 local flying = false
 local flySpeed = 50
+local flyGyro, flyVel
 
-FlyTab:CreateSlider({
+PlayerTab:CreateSlider({
     Name = "سرعة الطيران",
     Range = {10, 200},
     Increment = 5,
     Suffix = "Speed",
     CurrentValue = 50,
     Flag = "FlySpeed",
-    Callback = function(value)
-        flySpeed = value
-    end,
+    Callback = function(v) flySpeed = v end,
 })
 
-FlyTab:CreateToggle({
-    Name = "تفعيل الطيران",
+PlayerTab:CreateToggle({
+    Name = "🛫 الطيران",
     CurrentValue = false,
-    Flag = "FlyToggle",
-    Callback = function(value)
-        flying = value
-        local char = game.Players.LocalPlayer.Character
+    Flag = "Fly",
+    Callback = function(v)
+        flying = v
+        local char = player.Character
         if not char then return end
         local hrp = char:FindFirstChild("HumanoidRootPart")
         if not hrp then return end
-
+        
         if flying then
-            local bodyGyro = Instance.new("BodyGyro")
-            bodyGyro.P = 9e4
-            bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-            bodyGyro.CFrame = hrp.CFrame
-            bodyGyro.Parent = hrp
-
-            local bodyVel = Instance.new("BodyVelocity")
-            bodyVel.Velocity = Vector3.new(0, 0, 0)
-            bodyVel.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-            bodyVel.Parent = hrp
-
+            flyGyro = Instance.new("BodyGyro", hrp)
+            flyGyro.P = 9e4
+            flyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+            flyGyro.CFrame = hrp.CFrame
+            
+            flyVel = Instance.new("BodyVelocity", hrp)
+            flyVel.Velocity = Vector3.new(0, 0, 0)
+            flyVel.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+            
             task.spawn(function()
                 while flying do
                     task.wait()
                     local cam = workspace.CurrentCamera
                     local move = Vector3.new(0, 0, 0)
-                    local UIS = game:GetService("UserInputService")
-                    if UIS:IsKeyDown(Enum.KeyCode.W) then move = move + cam.CFrame.LookVector end
-                    if UIS:IsKeyDown(Enum.KeyCode.S) then move = move - cam.CFrame.LookVector end
-                    if UIS:IsKeyDown(Enum.KeyCode.A) then move = move - cam.CFrame.RightVector end
-                    if UIS:IsKeyDown(Enum.KeyCode.D) then move = move + cam.CFrame.RightVector end
-                    if UIS:IsKeyDown(Enum.KeyCode.Space) then move = move + Vector3.new(0, 1, 0) end
-                    if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then move = move - Vector3.new(0, 1, 0) end
-                    bodyVel.Velocity = move * flySpeed
+                    local uis = game:GetService("UserInputService")
+                    if uis:IsKeyDown(Enum.KeyCode.W) then move = move + cam.CFrame.LookVector end
+                    if uis:IsKeyDown(Enum.KeyCode.S) then move = move - cam.CFrame.LookVector end
+                    if uis:IsKeyDown(Enum.KeyCode.A) then move = move - cam.CFrame.RightVector end
+                    if uis:IsKeyDown(Enum.KeyCode.D) then move = move + cam.CFrame.RightVector end
+                    if uis:IsKeyDown(Enum.KeyCode.Space) then move = move + Vector3.new(0, 1, 0) end
+                    if uis:IsKeyDown(Enum.KeyCode.LeftControl) then move = move - Vector3.new(0, 1, 0) end
+                    flyVel.Velocity = move * flySpeed
                 end
-                if bodyGyro then bodyGyro:Destroy() end
-                if bodyVel then bodyVel:Destroy() end
+                if flyGyro then flyGyro:Destroy() end
+                if flyVel then flyVel:Destroy() end
             end)
+        else
+            if flyGyro then flyGyro:Destroy(); flyGyro = nil end
+            if flyVel then flyVel:Destroy(); flyVel = nil end
         end
     end,
 })
 
--- ===== تبويب معلومات =====
-local InfoTab = Window:CreateTab("معلومات", nil)
-
-InfoTab:CreateParagraph({
-    Title = "مطور يوسف HUB",
-    Content = "مشروع واجهة بلغة Lua\nصُنع بواسطة: مطور يوسف",
+-- Noclip
+local noclip = false
+PlayerTab:CreateToggle({
+    Name = "👻 Noclip (عبور الجدران)",
+    CurrentValue = false,
+    Flag = "Noclip",
+    Callback = function(v) noclip = v end,
 })
 
-InfoTab:CreateButton({
-    Name = "نسخ رابط الديسكورد",
+game:GetService("RunService").Stepped:Connect(function()
+    if noclip and player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end
+end)
+
+-- =========================================
+-- 💰 تبويب الأوتو
+-- =========================================
+local AutoTab = Window:CreateTab("الأوتو", nil)
+
+AutoTab:CreateButton({
+    Name = "💰 بيع كل البيض",
     Callback = function()
-        setclipboard("https://discord.gg/")
-        Rayfield:Notify({
-            Title = "مطور يوسف",
-            Content = "تم نسخ رابط الديسكورد",
-            Duration = 3,
-        })
+        Rayfield:Notify({ Title = "YOUSEF HUB", Content = "يبحث عن زر البيع...", Duration = 2 })
+        -- يبحث عن RemoteEvent للبيع
+        for _, obj in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+            if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
+                local n = string.lower(obj.Name)
+                if string.find(n, "sell") or string.find(n, "بيع") then
+                    pcall(function() obj:FireServer() end)
+                end
+            end
+        end
+    end,
+})
+
+AutoTab:CreateToggle({
+    Name = "🔄 فقس تلقائي",
+    CurrentValue = false,
+    Flag = "AutoHatch",
+    Callback = function(v)
+        if v then
+            Rayfield:Notify({ Title = "YOUSEF HUB", Content = "الفقس التلقائي يحتاج اسم الزر", Duration = 3 })
+        end
+    end,
+})
+
+-- =========================================
+-- ⚙️ تبويب الإعدادات
+-- =========================================
+local SetTab = Window:CreateTab("الإعدادات", nil)
+
+SetTab:CreateParagraph({
+    Title = "YOUSEF EGG HUB",
+    Content = "Steal an Egg Script\nصُنع بواسطة: مطور يوسف\nالإصدار: 1.0",
+})
+
+SetTab:CreateButton({
+    Name = "📋 نسخ رابط الديسكورد",
+    Callback = function()
+        setclipboard("https://discord.gg/yousef")
+        Rayfield:Notify({ Title = "YOUSEF HUB", Content = "تم النسخ!", Duration = 2 })
+    end,
+})
+
+SetTab:CreateButton({
+    Name = "❌ إغلاق الواجهة",
+    Callback = function()
+        Rayfield:Destroy()
     end,
 })
