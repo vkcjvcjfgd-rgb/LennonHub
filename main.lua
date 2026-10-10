@@ -1,336 +1,156 @@
--- ===== YJW HUB | Steal an Egg | Delta Edition =====
-local Players = game:GetService("Players")
-local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local RS = game:GetService("ReplicatedStorage")
-local player = Players.LocalPlayer
-local pg = player:WaitForChild("PlayerGui")
+local Players=game:GetService("Players")
+local TweenService=game:GetService("TweenService")
+local P=Players.LocalPlayer
+local PG=P:WaitForChild("PlayerGui")
 
-local old = pg:FindFirstChild("YJW_Hub")
+local old=PG:FindFirstChild("YousefDevUI")
 if old then old:Destroy() end
 
-local gui = Instance.new("ScreenGui", pg)
-gui.Name = "YJW_Hub"
-gui.ResetOnSpawn = false
+local GUI=Instance.new("ScreenGui")
+GUI.Name="YousefDevUI"
+GUI.ResetOnSpawn=false
+GUI.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
+GUI.Parent=PG
 
--- ===== الواجهة =====
-local Main = Instance.new("Frame", gui)
-Main.Size = UDim2.new(0, 520, 0, 340)
-Main.Position = UDim2.new(0.5, -260, 0.5, -170)
-Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
+local Main=Instance.new("CanvasGroup")
+Main.AnchorPoint=Vector2.new(.5,.5)
+Main.Position=UDim2.fromScale(.5,.5)
+Main.Size=UDim2.fromOffset(500,210)
+Main.BackgroundColor3=Color3.fromRGB(18,18,22)
+Main.BorderSizePixel=0
+Main.Active=true
+Main.Draggable=true
+Main.GroupTransparency=1
+Main.Parent=GUI
 
-local H = Instance.new("Frame", Main)
-H.Size = UDim2.new(1, 0, 0, 40)
-H.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
-H.BorderSizePixel = 0
-Instance.new("UICorner", H).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner",Main).CornerRadius=UDim.new(0,14)
 
-local T = Instance.new("TextLabel", H)
-T.Size = UDim2.new(1, -50, 1, 0)
-T.Position = UDim2.new(0, 15, 0, 0)
-T.BackgroundTransparency = 1
-T.Text = "YJW HUB | Steal an Egg"
-T.TextColor3 = Color3.fromRGB(255, 255, 255)
-T.Font = Enum.Font.GothamBold
-T.TextSize = 16
-T.TextXAlignment = Enum.TextXAlignment.Left
+local stroke=Instance.new("UIStroke",Main)
+stroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
+stroke.Color=Color3.fromRGB(220,38,44)
+stroke.Thickness=2
 
-local X = Instance.new("TextButton", H)
-X.Size = UDim2.new(0, 30, 0, 30)
-X.Position = UDim2.new(1, -38, 0, 5)
-X.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-X.Text = "X"
-X.TextColor3 = Color3.fromRGB(255, 255, 255)
-X.Font = Enum.Font.GothamBold
-Instance.new("UICorner", X).CornerRadius = UDim.new(0, 6)
-X.MouseButton1Click:Connect(function() gui:Destroy() end)
+local scale=Instance.new("UIScale",Main)
+scale.Scale=.92
 
-local LT = Instance.new("Frame", Main)
-LT.Size = UDim2.new(0, 105, 1, -50)
-LT.Position = UDim2.new(0, 5, 0, 45)
-LT.BackgroundTransparency = 1
-local LL = Instance.new("UIListLayout", LT)
-LL.Padding = UDim.new(0, 5)
+local Header=Instance.new("Frame",Main)
+Header.Position=UDim2.fromOffset(24,18)
+Header.Size=UDim2.new(1,-72,0,46)
+Header.BackgroundTransparency=1
 
-local C = Instance.new("Frame", Main)
-C.Size = UDim2.new(1, -125, 1, -50)
-C.Position = UDim2.new(0, 115, 0, 45)
-C.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
-C.BorderSizePixel = 0
-Instance.new("UICorner", C).CornerRadius = UDim.new(0, 6)
+local Title=Instance.new("TextLabel",Header)
+Title.Size=UDim2.new(.58,0,1,0)
+Title.BackgroundTransparency=1
+Title.RichText=true
+Title.Text='<font color="rgb(220,38,44)">مطور</font> <font color="rgb(255,255,255)">يوسف</font>'
+Title.Font=Enum.Font.GothamBlack
+Title.TextSize=23
+Title.TextColor3=Color3.new(1,1,1)
+Title.TextXAlignment=Enum.TextXAlignment.Left
 
-local Sc = Instance.new("ScrollingFrame", C)
-Sc.Size = UDim2.new(1, -10, 1, -10)
-Sc.Position = UDim2.new(0, 5, 0, 5)
-Sc.BackgroundTransparency = 1
-Sc.BorderSizePixel = 0
-Sc.ScrollBarThickness = 3
-Sc.CanvasSize = UDim2.new(0, 0, 0, 0)
-Sc.AutomaticCanvasSize = Enum.AutomaticSize.Y
-local CL = Instance.new("UIListLayout", Sc)
-CL.Padding = UDim.new(0, 7)
+local Divider=Instance.new("Frame",Header)
+Divider.AnchorPoint=Vector2.new(.5,.5)
+Divider.Position=UDim2.new(.59,0,.5,0)
+Divider.Size=UDim2.fromOffset(2,29)
+Divider.BackgroundColor3=Color3.fromRGB(220,38,44)
+Divider.BorderSizePixel=0
 
--- ===== دوال =====
-local function mkTab(txt, cb)
-    local b = Instance.new("TextButton", LT)
-    b.Size = UDim2.new(1, 0, 0, 38)
-    b.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    b.Text = txt
-    b.TextColor3 = Color3.fromRGB(255, 255, 255)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 13
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-    b.MouseButton1Click:Connect(cb)
-end
+local Updated=Instance.new("TextLabel",Header)
+Updated.Position=UDim2.new(.62,0,0,0)
+Updated.Size=UDim2.new(.38,0,1,0)
+Updated.BackgroundTransparency=1
+Updated.Text="UPDATED!!!"
+Updated.TextColor3=Color3.new(1,1,1)
+Updated.Font=Enum.Font.GothamBlack
+Updated.TextSize=19
+Updated.TextXAlignment=Enum.TextXAlignment.Center
 
-local function mkTog(par, txt, def, cb)
-    local f = Instance.new("Frame", par)
-    f.Size = UDim2.new(1, -8, 0, 42)
-    f.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
-    f.BorderSizePixel = 0
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
-    local l = Instance.new("TextLabel", f)
-    l.Size = UDim2.new(1, -70, 1, 0)
-    l.Position = UDim2.new(0, 10, 0, 0)
-    l.BackgroundTransparency = 1
-    l.Text = txt
-    l.TextColor3 = Color3.fromRGB(255, 255, 255)
-    l.Font = Enum.Font.Gotham
-    l.TextSize = 12
-    l.TextXAlignment = Enum.TextXAlignment.Left
-    local b = Instance.new("TextButton", f)
-    b.Size = UDim2.new(0, 44, 0, 22)
-    b.Position = UDim2.new(1, -52, 0.5, -11)
-    b.BackgroundColor3 = def and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(90, 90, 90)
-    b.Text = ""
-    Instance.new("UICorner", b).CornerRadius = UDim.new(1, 0)
-    local d = Instance.new("Frame", b)
-    d.Size = UDim2.new(0, 16, 0, 16)
-    d.Position = def and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
-    d.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", d).CornerRadius = UDim.new(1, 0)
-    local s = def
-    b.MouseButton1Click:Connect(function()
-        s = not s
-        b.BackgroundColor3 = s and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(90, 90, 90)
-        d.Position = s and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
-        cb(s)
-    end)
-end
+local Close=Instance.new("TextButton",Main)
+Close.AnchorPoint=Vector2.new(1,0)
+Close.Position=UDim2.new(1,-10,0,10)
+Close.Size=UDim2.fromOffset(30,30)
+Close.BackgroundColor3=Color3.fromRGB(27,27,33)
+Close.BorderSizePixel=0
+Close.Text="X"
+Close.TextColor3=Color3.fromRGB(220,220,225)
+Close.Font=Enum.Font.GothamBold
+Close.TextSize=11
+Close.AutoButtonColor=false
+Instance.new("UICorner",Close).CornerRadius=UDim.new(0,8)
 
-local function mkBtn(par, txt, cb)
-    local b = Instance.new("TextButton", par)
-    b.Size = UDim2.new(1, -8, 0, 38)
-    b.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    b.Text = txt
-    b.TextColor3 = Color3.fromRGB(255, 255, 255)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 12
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-    b.MouseButton1Click:Connect(cb)
-end
+local Rail=Instance.new("Frame",Main)
+Rail.Position=UDim2.fromOffset(24,67)
+Rail.Size=UDim2.new(1,-48,0,2)
+Rail.BackgroundColor3=Color3.fromRGB(220,38,44)
+Rail.BorderSizePixel=0
 
-local function mkPage()
-    local p = Instance.new("Frame", Sc)
-    p.Size = UDim2.new(1, 0, 0, 0)
-    p.AutomaticSize = Enum.AutomaticSize.Y
-    p.BackgroundTransparency = 1
-    p.Visible = false
-    local l = Instance.new("UIListLayout", p)
-    l.Padding = UDim.new(0, 7)
-    return p
-end
+local Desc=Instance.new("TextLabel",Main)
+Desc.Position=UDim2.fromOffset(28,82)
+Desc.Size=UDim2.new(1,-56,0,31)
+Desc.BackgroundTransparency=1
+Desc.Text="Get the updated version now in our official Discord."
+Desc.TextColor3=Color3.fromRGB(178,175,185)
+Desc.Font=Enum.Font.GothamMedium
+Desc.TextSize=13
+Desc.TextXAlignment=Enum.TextXAlignment.Center
 
-local P1 = mkPage()
-local P2 = mkPage()
-local P3 = mkPage()
+local Copy=Instance.new("TextButton",Main)
+Copy.AnchorPoint=Vector2.new(.5,0)
+Copy.Position=UDim2.new(.5,0,0,126)
+Copy.Size=UDim2.fromOffset(330,55)
+Copy.BackgroundColor3=Color3.fromRGB(88,101,242)
+Copy.BorderSizePixel=0
+Copy.AutoButtonColor=false
+Copy.Text=""
+Instance.new("UICorner",Copy).CornerRadius=UDim.new(0,11)
 
-local function show(p)
-    for _, x in pairs({P1, P2, P3}) do x.Visible = false end
-    p.Visible = true
-end
+local DiscordIcon=Instance.new("ImageLabel",Copy)
+DiscordIcon.AnchorPoint=Vector2.new(0,.5)
+DiscordIcon.Position=UDim2.new(0,70,.5,0)
+DiscordIcon.Size=UDim2.fromOffset(30,30)
+DiscordIcon.BackgroundTransparency=1
+DiscordIcon.Image="rbxassetid://10367063084"
+DiscordIcon.ScaleType=Enum.ScaleType.Fit
 
-mkTab("Steal", function() show(P1) end)
-mkTab("Player", function() show(P2) end)
-mkTab("Eggs", function() show(P3) end)
-show(P1)
+local CopyText=Instance.new("TextLabel",Copy)
+CopyText.Position=UDim2.fromOffset(108,0)
+CopyText.Size=UDim2.new(1,-128,1,0)
+CopyText.BackgroundTransparency=1
+CopyText.Text="COPY DISCORD"
+CopyText.TextColor3=Color3.new(1,1,1)
+CopyText.Font=Enum.Font.GothamBlack
+CopyText.TextSize=15
+CopyText.TextXAlignment=Enum.TextXAlignment.Left
 
--- ===== Steal =====
-local autoSteal = false
-mkTog(P1, "🥷 سرقة تلقائية", false, function(v) autoSteal = v end)
+local DISCORD="https://discord.gg/8cqVS3DUzu"
 
-task.spawn(function()
-    while task.wait(0.5) do
-        if autoSteal and player.Character then
-            local hrp = player.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local closest, dist = nil, math.huge
-                for _, o in pairs(workspace:GetDescendants()) do
-                    if o:IsA("BasePart") then
-                        local n = string.lower(o.Name)
-                        if string.find(n, "egg") then
-                            local d = (o.Position - hrp.Position).Magnitude
-                            if d < dist then dist = d; closest = o end
-                        end
-                    end
-                end
-                if closest then
-                    pcall(function() hrp.CFrame = closest.CFrame + Vector3.new(0, 2, 0) end)
-                end
-            end
-        end
-    end
+Copy.MouseEnter:Connect(function()
+	TweenService:Create(Copy,TweenInfo.new(.12),{BackgroundColor3=Color3.fromRGB(100,112,255)}):Play()
 end)
 
-mkBtn(P1, "💰 بيع البيض", function()
-    for _, o in pairs(RS:GetDescendants()) do
-        if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
-            if string.find(string.lower(o.Name), "sell") then
-                pcall(function() o:FireServer() end)
-            end
-        end
-    end
+Copy.MouseLeave:Connect(function()
+	TweenService:Create(Copy,TweenInfo.new(.12),{BackgroundColor3=Color3.fromRGB(88,101,242)}):Play()
 end)
 
-mkBtn(P1, "🥚 فقس البيض", function()
-    for _, o in pairs(RS:GetDescendants()) do
-        if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
-            if string.find(string.lower(o.Name), "hatch") then
-                pcall(function() o:FireServer() end)
-            end
-        end
-    end
+Copy.MouseButton1Click:Connect(function()
+	if setclipboard then
+		setclipboard(DISCORD)
+	elseif toclipboard then
+		toclippboard(DISCORD)
+	end
+	CopyText.Text="COPIED!"
+	task.delay(1,function()
+		if CopyText.Parent then CopyText.Text="COPY DISCORD" end
+	end)
 end)
 
--- ===== Player =====
-_G.inf = false
-_G.fly = false
-_G.nc = false
-
-mkTog(P2, "🦅 قفز لا نهائي", false, function(v) _G.inf = v end)
-mkTog(P2, "✈️ طيران", false, function(v) _G.fly = v end)
-mkTog(P2, "👻 Noclip", false, function(v) _G.nc = v end)
-
-task.spawn(function()
-    while task.wait(0.1) do
-        local c = player.Character
-        if c then
-            local h = c:FindFirstChildOfClass("Humanoid")
-            if h then h.WalkSpeed = 16; h.JumpPower = 50 end
-        end
-    end
+Close.MouseButton1Click:Connect(function()
+	GUI:Destroy()
 end)
 
-UIS.JumpRequest:Connect(function()
-    if _G.inf then
-        local c = player.Character
-        if c and c:FindFirstChildOfClass("Humanoid") then
-            c:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-        end
-    end
-end)
-
-RunService.Stepped:Connect(function()
-    if _G.nc and player.Character then
-        for _, p in pairs(player.Character:GetDescendants()) do
-            if p:IsA("BasePart") then p.CanCollide = false end
-        end
-    end
-end)
-
-task.spawn(function()
-    while task.wait() do
-        if _G.fly then
-            local c = player.Character
-            if c then
-                local hrp = c:FindFirstChild("HumanoidRootPart")
-                if hrp and not hrp:FindFirstChild("YF") then
-                    local g = Instance.new("BodyGyro", hrp); g.Name = "YF"
-                    g.P = 9e4; g.MaxTorque = Vector3.new(9e9,9e9,9e9); g.CFrame = hrp.CFrame
-                    local v = Instance.new("BodyVelocity", hrp); v.Name = "YFV"
-                    v.Velocity = Vector3.new(0,0,0); v.MaxForce = Vector3.new(9e9,9e9,9e9)
-                end
-                if hrp then
-                    local v = hrp:FindFirstChild("YFV")
-                    if v then
-                        local cam = workspace.CurrentCamera
-                        local m = Vector3.new(0,0,0)
-                        if UIS:IsKeyDown(Enum.KeyCode.W) then m = m + cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.S) then m = m - cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.A) then m = m - cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.D) then m = m + cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.Space) then m = m + Vector3.new(0,1,0) end
-                        v.Velocity = m * 60
-                    end
-                end
-            end
-        end
-    end
-end)
-
--- ===== Eggs ESP =====
-local esp = false
-local list = {}
-
-local function clearE()
-    for _, g in pairs(list) do if g and g.Parent then g:Destroy() end end
-    list = {}
-end
-
-local function addE(part, txt)
-    if list[part] then return end
-    local bb = Instance.new("BillboardGui", part)
-    bb.Size = UDim2.new(0, 150, 0, 35)
-    bb.StudsOffset = Vector3.new(0, 3, 0)
-    bb.AlwaysOnTop = true
-    local l = Instance.new("TextLabel", bb)
-    l.Size = UDim2.new(1, 0, 1, 0)
-    l.BackgroundTransparency = 0.4
-    l.BackgroundColor3 = Color3.fromRGB(0,0,0)
-    l.TextColor3 = Color3.fromRGB(255, 220, 50)
-    l.Font = Enum.Font.GothamBold
-    l.TextSize = 12
-    l.Text = txt
-    list[part] = bb
-end
-
-local function scan()
-    for _, o in pairs(workspace:GetDescendants()) do
-        if o:IsA("Model") or o:IsA("BasePart") then
-            if string.find(string.lower(o.Name), "egg") then
-                local p = o:IsA("BasePart") and o or o:FindFirstChildWhichIsA("BasePart")
-                if p and not list[p] then addE(p, "🥚 " .. o.Name) end
-            end
-        end
-    end
-end
-
-mkTog(P3, "👁️ ESP البيض", false, function(v)
-    esp = v
-    if not v then clearE() end
-end)
-
-task.spawn(function()
-    while task.wait(2) do if esp then scan() end end
-end)
-
-mkBtn(P3, "🚀 روح لأقرب بيضة", function()
-    local c = player.Character
-    if not c then return end
-    local hrp = c:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    local cl, d = nil, math.huge
-    for _, o in pairs(workspace:GetDescendants()) do
-        if o:IsA("BasePart") and string.find(string.lower(o.Name), "egg") then
-            local dd = (o.Position - hrp.Position).Magnitude
-            if dd < d then d = dd; cl = o end
-        end
-    end
-    if cl then pcall(function() hrp.CFrame = cl.CFrame + Vector3.new(0, 3, 0) end) end
-end)
-
-print("✅ YJW HUB Loaded | Delta Edition")
+TweenService:Create(Main,TweenInfo.new(.28,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
+	GroupTransparency=0
+}):Play()
+TweenService:Create(scale,TweenInfo.new(.28,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
+	Scale=1
+}):Play()
