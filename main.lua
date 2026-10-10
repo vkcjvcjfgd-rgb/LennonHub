@@ -1,422 +1,232 @@
--- ===== YJW HUB | Steal an Egg | POWERED =====
+-- ===== YJW HUB | Steal an Egg | Delta Edition =====
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local RS = game:GetService("ReplicatedStorage")
-local TPS = game:GetService("TeleportService")
 local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local cam = workspace.CurrentCamera
+local pg = player:WaitForChild("PlayerGui")
 
-local old = playerGui:FindFirstChild("YJW_Hub")
+local old = pg:FindFirstChild("YJW_Hub")
 if old then old:Destroy() end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "YJW_Hub"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = playerGui
+local gui = Instance.new("ScreenGui", pg)
+gui.Name = "YJW_Hub"
+gui.ResetOnSpawn = false
 
--- ===== الإطار الرئيسي =====
-local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 600, 0, 400)
-Main.Position = UDim2.new(0.5, -300, 0.5, -200)
-Main.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+-- ===== الواجهة =====
+local Main = Instance.new("Frame", gui)
+Main.Size = UDim2.new(0, 520, 0, 340)
+Main.Position = UDim2.new(0.5, -260, 0.5, -170)
+Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
-Main.Parent = ScreenGui
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
--- الهيدر
-local Header = Instance.new("Frame")
-Header.Size = UDim2.new(1, 0, 0, 42)
-Header.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
-Header.BorderSizePixel = 0
-Header.Parent = Main
-Instance.new("UICorner", Header).CornerRadius = UDim.new(0, 12)
+local H = Instance.new("Frame", Main)
+H.Size = UDim2.new(1, 0, 0, 40)
+H.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
+H.BorderSizePixel = 0
+Instance.new("UICorner", H).CornerRadius = UDim.new(0, 10)
 
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -60, 1, 0)
-Title.Position = UDim2.new(0, 15, 0, 0)
-Title.BackgroundTransparency = 1
-Title.Text = "⚡ YJW HUB | POWERED ⚡"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 18
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Parent = Header
+local T = Instance.new("TextLabel", H)
+T.Size = UDim2.new(1, -50, 1, 0)
+T.Position = UDim2.new(0, 15, 0, 0)
+T.BackgroundTransparency = 1
+T.Text = "YJW HUB | Steal an Egg"
+T.TextColor3 = Color3.fromRGB(255, 255, 255)
+T.Font = Enum.Font.GothamBold
+T.TextSize = 16
+T.TextXAlignment = Enum.TextXAlignment.Left
 
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 32, 0, 32)
-CloseBtn.Position = UDim2.new(1, -40, 0.5, -16)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.BackgroundTransparency = 0.85
-CloseBtn.Text = "✕"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 16
-CloseBtn.Parent = Header
-Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
-CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+local X = Instance.new("TextButton", H)
+X.Size = UDim2.new(0, 30, 0, 30)
+X.Position = UDim2.new(1, -38, 0, 5)
+X.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
+X.Text = "X"
+X.TextColor3 = Color3.fromRGB(255, 255, 255)
+X.Font = Enum.Font.GothamBold
+Instance.new("UICorner", X).CornerRadius = UDim.new(0, 6)
+X.MouseButton1Click:Connect(function() gui:Destroy() end)
 
--- ===== الأعمدة =====
-local LeftTabs = Instance.new("Frame")
-LeftTabs.Size = UDim2.new(0, 115, 1, -55)
-LeftTabs.Position = UDim2.new(0, 8, 0, 48)
-LeftTabs.BackgroundTransparency = 1
-LeftTabs.Parent = Main
-local LL = Instance.new("UIListLayout", LeftTabs)
+local LT = Instance.new("Frame", Main)
+LT.Size = UDim2.new(0, 105, 1, -50)
+LT.Position = UDim2.new(0, 5, 0, 45)
+LT.BackgroundTransparency = 1
+local LL = Instance.new("UIListLayout", LT)
 LL.Padding = UDim.new(0, 5)
 
-local RightBtns = Instance.new("Frame")
-RightBtns.Size = UDim2.new(0, 115, 1, -55)
-RightBtns.Position = UDim2.new(1, -123, 0, 48)
-RightBtns.BackgroundTransparency = 1
-RightBtns.Parent = Main
-local RL = Instance.new("UIListLayout", RightBtns)
-RL.Padding = UDim.new(0, 5)
+local C = Instance.new("Frame", Main)
+C.Size = UDim2.new(1, -125, 1, -50)
+C.Position = UDim2.new(0, 115, 0, 45)
+C.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+C.BorderSizePixel = 0
+Instance.new("UICorner", C).CornerRadius = UDim.new(0, 6)
 
-local Content = Instance.new("Frame")
-Content.Size = UDim2.new(1, -255, 1, -55)
-Content.Position = UDim2.new(0, 128, 0, 48)
-Content.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
-Content.BorderSizePixel = 0
-Content.Parent = Main
-Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 8)
-
-local Scroll = Instance.new("ScrollingFrame")
-Scroll.Size = UDim2.new(1, -10, 1, -10)
-Scroll.Position = UDim2.new(0, 5, 0, 5)
-Scroll.BackgroundTransparency = 1
-Scroll.BorderSizePixel = 0
-Scroll.ScrollBarThickness = 3
-Scroll.ScrollBarImageColor3 = Color3.fromRGB(200, 30, 30)
-Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-Scroll.Parent = Content
-local CL = Instance.new("UIListLayout", Scroll)
+local Sc = Instance.new("ScrollingFrame", C)
+Sc.Size = UDim2.new(1, -10, 1, -10)
+Sc.Position = UDim2.new(0, 5, 0, 5)
+Sc.BackgroundTransparency = 1
+Sc.BorderSizePixel = 0
+Sc.ScrollBarThickness = 3
+Sc.CanvasSize = UDim2.new(0, 0, 0, 0)
+Sc.AutomaticCanvasSize = Enum.AutomaticSize.Y
+local CL = Instance.new("UIListLayout", Sc)
 CL.Padding = UDim.new(0, 7)
 
--- ===== دوال مساعدة =====
-local function makeTab(parent, text, cb)
-    local b = Instance.new("TextButton")
-    b.Size = UDim2.new(1, 0, 0, 40)
+-- ===== دوال =====
+local function mkTab(txt, cb)
+    local b = Instance.new("TextButton", LT)
+    b.Size = UDim2.new(1, 0, 0, 38)
     b.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    b.Text = text
+    b.Text = txt
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
     b.Font = Enum.Font.GothamBold
     b.TextSize = 13
-    b.AutoButtonColor = true
-    b.Parent = parent
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
     b.MouseButton1Click:Connect(cb)
 end
 
-local function makeToggle(parent, text, default, cb)
-    local f = Instance.new("Frame")
+local function mkTog(par, txt, def, cb)
+    local f = Instance.new("Frame", par)
     f.Size = UDim2.new(1, -8, 0, 42)
-    f.BackgroundColor3 = Color3.fromRGB(42, 42, 48)
+    f.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
     f.BorderSizePixel = 0
-    f.Parent = parent
     Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
-
-    local l = Instance.new("TextLabel")
+    local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -70, 1, 0)
     l.Position = UDim2.new(0, 10, 0, 0)
     l.BackgroundTransparency = 1
-    l.Text = text
+    l.Text = txt
     l.TextColor3 = Color3.fromRGB(255, 255, 255)
     l.Font = Enum.Font.Gotham
     l.TextSize = 12
     l.TextXAlignment = Enum.TextXAlignment.Left
-    l.Parent = f
-
-    local b = Instance.new("TextButton")
-    b.Size = UDim2.new(0, 45, 0, 22)
-    b.Position = UDim2.new(1, -53, 0.5, -11)
-    b.BackgroundColor3 = default and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(90, 90, 90)
+    local b = Instance.new("TextButton", f)
+    b.Size = UDim2.new(0, 44, 0, 22)
+    b.Position = UDim2.new(1, -52, 0.5, -11)
+    b.BackgroundColor3 = def and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(90, 90, 90)
     b.Text = ""
-    b.AutoButtonColor = false
-    b.Parent = f
     Instance.new("UICorner", b).CornerRadius = UDim.new(1, 0)
-
-    local d = Instance.new("Frame")
+    local d = Instance.new("Frame", b)
     d.Size = UDim2.new(0, 16, 0, 16)
-    d.Position = default and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+    d.Position = def and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
     d.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    d.Parent = b
     Instance.new("UICorner", d).CornerRadius = UDim.new(1, 0)
-
-    local state = default
+    local s = def
     b.MouseButton1Click:Connect(function()
-        state = not state
-        b.BackgroundColor3 = state and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(90, 90, 90)
-        d.Position = state and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
-        cb(state)
+        s = not s
+        b.BackgroundColor3 = s and Color3.fromRGB(60, 200, 60) or Color3.fromRGB(90, 90, 90)
+        d.Position = s and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+        cb(s)
     end)
 end
 
-local function makeBtn(parent, text, cb)
-    local b = Instance.new("TextButton")
+local function mkBtn(par, txt, cb)
+    local b = Instance.new("TextButton", par)
     b.Size = UDim2.new(1, -8, 0, 38)
     b.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    b.Text = text
+    b.Text = txt
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
     b.Font = Enum.Font.GothamBold
     b.TextSize = 12
-    b.Parent = parent
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
     b.MouseButton1Click:Connect(cb)
 end
 
-local function makeSlider(parent, text, min, max, default, cb)
-    local f = Instance.new("Frame")
-    f.Size = UDim2.new(1, -8, 0, 55)
-    f.BackgroundColor3 = Color3.fromRGB(42, 42, 48)
-    f.BorderSizePixel = 0
-    f.Parent = parent
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
-
-    local l = Instance.new("TextLabel")
-    l.Size = UDim2.new(1, -10, 0, 20)
-    l.Position = UDim2.new(0, 10, 0, 5)
-    l.BackgroundTransparency = 1
-    l.Text = text .. ": " .. default
-    l.TextColor3 = Color3.fromRGB(255, 255, 255)
-    l.Font = Enum.Font.Gotham
-    l.TextSize = 12
-    l.TextXAlignment = Enum.TextXAlignment.Left
-    l.Parent = f
-
-    local bar = Instance.new("Frame")
-    bar.Size = UDim2.new(1, -20, 0, 8)
-    bar.Position = UDim2.new(0, 10, 0, 32)
-    bar.BackgroundColor3 = Color3.fromRGB(70, 70, 80)
-    bar.Parent = f
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
-
-    local fill = Instance.new("Frame")
-    fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
-    fill.Parent = bar
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
-
-    local dragging = false
-
-    local function update(input)
-        local x = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-        local val = math.floor(min + (max - min) * x)
-        fill.Size = UDim2.new(x, 0, 1, 0)
-        l.Text = text .. ": " .. val
-        cb(val)
-    end
-
-    bar.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            update(i)
-        end
-    end)
-    bar.InputEnded:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
-        end
-    end)
-    UIS.InputChanged:Connect(function(i)
-        if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-            update(i)
-        end
-    end)
-end
-
-local function newPage()
-    local p = Instance.new("Frame")
+local function mkPage()
+    local p = Instance.new("Frame", Sc)
     p.Size = UDim2.new(1, 0, 0, 0)
     p.AutomaticSize = Enum.AutomaticSize.Y
     p.BackgroundTransparency = 1
     p.Visible = false
-    p.Parent = Scroll
     local l = Instance.new("UIListLayout", p)
     l.Padding = UDim.new(0, 7)
     return p
 end
 
--- ===== الصفحات =====
-local FarmPage = newPage()
-local StealPage = newPage()
-local PlayerPage = newPage()
-local EggPage = newPage()
-local MiscPage = newPage()
-local pages = {FarmPage, StealPage, PlayerPage, EggPage, MiscPage}
+local P1 = mkPage()
+local P2 = mkPage()
+local P3 = mkPage()
 
 local function show(p)
-    for _, x in pairs(pages) do x.Visible = false end
+    for _, x in pairs({P1, P2, P3}) do x.Visible = false end
     p.Visible = true
 end
 
-makeTab(LeftTabs, "🌾 Farm", function() show(FarmPage) end)
-makeTab(LeftTabs, "🥷 Steal", function() show(StealPage) end)
-makeTab(LeftTabs, "🎮 Player", function() show(PlayerPage) end)
-makeTab(LeftTabs, "🥚 Eggs", function() show(EggPage) end)
-makeTab(LeftTabs, "⚙️ Misc", function() show(MiscPage) end)
-makeTab(RightBtns, "📱 Telegram", function() setclipboard("https://t.me/YJW_m") end)
-makeTab(RightBtns, "🔄 Rejoin", function() TPS:Teleport(game.PlaceId, player) end)
-makeTab(RightBtns, "🏠 ServerHop", function()
-    local servers = game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-    local data = game:GetService("HttpService"):JSONDecode(servers)
-    for _, s in pairs(data.data) do
-        if s.playing < s.maxPlayers and s.id ~= game.JobId then
-            TPS:TeleportToPlaceInstance(game.PlaceId, s.id, player)
-            return
-        end
-    end
-end)
-makeTab(RightBtns, "❌ Close", function() ScreenGui:Destroy() end)
+mkTab("Steal", function() show(P1) end)
+mkTab("Player", function() show(P2) end)
+mkTab("Eggs", function() show(P3) end)
+show(P1)
 
-show(FarmPage)
-
--- ============================================
--- ===== Farm =====
--- ============================================
-local autoSell = false
-local autoHatch = false
-local autoCollect = false
-local sellDelay = 3
-local hatchDelay = 5
-
-local function findRemote(...)
-    local names = {...}
-    for _, obj in pairs(RS:GetDescendants()) do
-        if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
-            local lower = string.lower(obj.Name)
-            for _, n in pairs(names) do
-                if string.find(lower, string.lower(n)) then
-                    return obj
-                end
-            end
-        end
-    end
-    return nil
-end
-
-makeToggle(FarmPage, "💰 بيع تلقائي (Auto Sell)", false, function(v) autoSell = v end)
-makeSlider(FarmPage, "سرعة البيع (ثواني)", 1, 30, 3, function(v) sellDelay = v end)
-makeToggle(FarmPage, "🥚 فقس تلقائي (Auto Hatch)", false, function(v) autoHatch = v end)
-makeSlider(FarmPage, "سرعة الفقس (ثواني)", 1, 30, 5, function(v) hatchDelay = v end)
-makeToggle(FarmPage, "📦 جمع تلقائي (Auto Collect)", false, function(v) autoCollect = v end)
-
--- البيع
-task.spawn(function()
-    while task.wait(sellDelay) do
-        if autoSell then
-            local r = findRemote("Sell", "SellAll", "بيع")
-            if r then pcall(function() r:FireServer() end) end
-        end
-    end
-end)
-
--- الفقس
-task.spawn(function()
-    while task.wait(hatchDelay) do
-        if autoHatch then
-            local r = findRemote("Hatch", "HatchEgg", "فقس")
-            if r then pcall(function() r:FireServer() end) end
-        end
-    end
-end)
-
--- الجمع
-task.spawn(function()
-    while task.wait(1) do
-        if autoCollect and player.Character then
-            local hrp = player.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                for _, obj in pairs(workspace:GetDescendants()) do
-                    if obj:IsA("BasePart") then
-                        local n = string.lower(obj.Name)
-                        if string.find(n, "coin") or string.find(n, "cash") then
-                            if (obj.Position - hrp.Position).Magnitude < 15 then
-                                obj.CFrame = hrp.CFrame
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end)
-
--- ============================================
 -- ===== Steal =====
--- ============================================
 local autoSteal = false
-local stealSpeed = 0.5
-local stealRange = 500
-local stealthMode = false
-
-makeToggle(StealPage, "🥷 سرقة تلقائية (Auto Steal)", false, function(v) autoSteal = v end)
-makeSlider(StealPage, "سرعة السرقة (x10 مللي)", 1, 20, 5, function(v) stealSpeed = v / 10 end)
-makeSlider(StealPage, "مدى السرقة (studs)", 50, 2000, 500, function(v) stealRange = v end)
-makeToggle(StealPage, "🕵️ وضع التخفي (Slow Teleport)", false, function(v) stealthMode = v end)
+mkTog(P1, "🥷 سرقة تلقائية", false, function(v) autoSteal = v end)
 
 task.spawn(function()
-    while task.wait(stealSpeed) do
+    while task.wait(0.5) do
         if autoSteal and player.Character then
             local hrp = player.Character:FindFirstChild("HumanoidRootPart")
             if hrp then
                 local closest, dist = nil, math.huge
-                for _, obj in pairs(workspace:GetDescendants()) do
-                    if obj:IsA("BasePart") then
-                        local n = string.lower(obj.Name)
+                for _, o in pairs(workspace:GetDescendants()) do
+                    if o:IsA("BasePart") then
+                        local n = string.lower(o.Name)
                         if string.find(n, "egg") then
-                            local d = (obj.Position - hrp.Position).Magnitude
-                            if d < dist and d < stealRange then dist = d; closest = obj end
+                            local d = (o.Position - hrp.Position).Magnitude
+                            if d < dist then dist = d; closest = o end
                         end
                     end
                 end
                 if closest then
-                    pcall(function()
-                        if stealthMode then
-                            hrp.CFrame = hrp.CFrame:Lerp(closest.CFrame + Vector3.new(0, 2, 0), 0.3)
-                        else
-                            hrp.CFrame = closest.CFrame + Vector3.new(0, 2, 0)
-                        end
-                    end)
+                    pcall(function() hrp.CFrame = closest.CFrame + Vector3.new(0, 2, 0) end)
                 end
             end
         end
     end
 end)
 
--- ============================================
--- ===== Player =====
--- ============================================
-local speed = 16
-local jump = 50
-_G.infJump = false
-_G.fly = false
-_G.noclip = false
-_G.flySpeed = 60
+mkBtn(P1, "💰 بيع البيض", function()
+    for _, o in pairs(RS:GetDescendants()) do
+        if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
+            if string.find(string.lower(o.Name), "sell") then
+                pcall(function() o:FireServer() end)
+            end
+        end
+    end
+end)
 
-makeSlider(PlayerPage, "🏃 السرعة", 16, 300, 16, function(v) speed = v end)
-makeSlider(PlayerPage, "🦘 القفز", 50, 500, 50, function(v) jump = v end)
-makeToggle(PlayerPage, "🦅 قفز لا نهائي", false, function(v) _G.infJump = v end)
-makeToggle(PlayerPage, "✈️ طيران (Fly)", false, function(v) _G.fly = v end)
-makeSlider(PlayerPage, "⚡ سرعة الطيران", 20, 300, 60, function(v) _G.flySpeed = v end)
-makeToggle(PlayerPage, "👻 Noclip (عبور الجدران)", false, function(v) _G.noclip = v end)
+mkBtn(P1, "🥚 فقس البيض", function()
+    for _, o in pairs(RS:GetDescendants()) do
+        if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
+            if string.find(string.lower(o.Name), "hatch") then
+                pcall(function() o:FireServer() end)
+            end
+        end
+    end
+end)
+
+-- ===== Player =====
+_G.inf = false
+_G.fly = false
+_G.nc = false
+
+mkTog(P2, "🦅 قفز لا نهائي", false, function(v) _G.inf = v end)
+mkTog(P2, "✈️ طيران", false, function(v) _G.fly = v end)
+mkTog(P2, "👻 Noclip", false, function(v) _G.nc = v end)
 
 task.spawn(function()
     while task.wait(0.1) do
         local c = player.Character
         if c then
             local h = c:FindFirstChildOfClass("Humanoid")
-            if h then h.WalkSpeed = speed; h.JumpPower = jump end
+            if h then h.WalkSpeed = 16; h.JumpPower = 50 end
         end
     end
 end)
 
 UIS.JumpRequest:Connect(function()
-    if _G.infJump then
+    if _G.inf then
         local c = player.Character
         if c and c:FindFirstChildOfClass("Humanoid") then
             c:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
@@ -425,7 +235,7 @@ UIS.JumpRequest:Connect(function()
 end)
 
 RunService.Stepped:Connect(function()
-    if _G.noclip and player.Character then
+    if _G.nc and player.Character then
         for _, p in pairs(player.Character:GetDescendants()) do
             if p:IsA("BasePart") then p.CanCollide = false end
         end
@@ -447,14 +257,14 @@ task.spawn(function()
                 if hrp then
                     local v = hrp:FindFirstChild("YFV")
                     if v then
+                        local cam = workspace.CurrentCamera
                         local m = Vector3.new(0,0,0)
                         if UIS:IsKeyDown(Enum.KeyCode.W) then m = m + cam.CFrame.LookVector end
                         if UIS:IsKeyDown(Enum.KeyCode.S) then m = m - cam.CFrame.LookVector end
                         if UIS:IsKeyDown(Enum.KeyCode.A) then m = m - cam.CFrame.RightVector end
                         if UIS:IsKeyDown(Enum.KeyCode.D) then m = m + cam.CFrame.RightVector end
                         if UIS:IsKeyDown(Enum.KeyCode.Space) then m = m + Vector3.new(0,1,0) end
-                        if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then m = m - Vector3.new(0,1,0) end
-                        v.Velocity = m * _G.flySpeed
+                        v.Velocity = m * 60
                     end
                 end
             end
@@ -462,122 +272,65 @@ task.spawn(function()
     end
 end)
 
--- ============================================
--- ===== Eggs (ESP) =====
--- ============================================
-local espEnabled = false
-local espList = {}
+-- ===== Eggs ESP =====
+local esp = false
+local list = {}
 
-local function clearESP()
-    for _, gui in pairs(espList) do
-        if gui and gui.Parent then gui:Destroy() end
-    end
-    espList = {}
+local function clearE()
+    for _, g in pairs(list) do if g and g.Parent then g:Destroy() end end
+    list = {}
 end
 
-local function createESP(part, text, color)
-    if espList[part] then return end
-    local bb = Instance.new("BillboardGui")
-    bb.Size = UDim2.new(0, 180, 0, 40)
+local function addE(part, txt)
+    if list[part] then return end
+    local bb = Instance.new("BillboardGui", part)
+    bb.Size = UDim2.new(0, 150, 0, 35)
     bb.StudsOffset = Vector3.new(0, 3, 0)
     bb.AlwaysOnTop = true
-    bb.Parent = part
-
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(1, 0, 1, 0)
-    lbl.BackgroundTransparency = 0.3
-    lbl.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-    lbl.TextColor3 = color or Color3.fromRGB(255, 220, 50)
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextSize = 12
-    lbl.Text = text
-    lbl.Parent = bb
-    Instance.new("UICorner", lbl).CornerRadius = UDim.new(0, 6)
-    espList[part] = bb
+    local l = Instance.new("TextLabel", bb)
+    l.Size = UDim2.new(1, 0, 1, 0)
+    l.BackgroundTransparency = 0.4
+    l.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    l.TextColor3 = Color3.fromRGB(255, 220, 50)
+    l.Font = Enum.Font.GothamBold
+    l.TextSize = 12
+    l.Text = txt
+    list[part] = bb
 end
 
-local function scanEggs()
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("Model") or obj:IsA("BasePart") then
-            local n = string.lower(obj.Name)
-            if string.find(n, "egg") then
-                local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart")
-                if part and not espList[part] then
-                    local info = "🥚 " .. obj.Name
-                    for _, c in pairs(obj:GetDescendants()) do
-                        if c:IsA("StringValue") or c:IsA("NumberValue") then
-                            info = info .. "\n💰 " .. tostring(c.Value)
-                            break
-                        end
-                    end
-                    createESP(part, info, Color3.fromRGB(255, 220, 50))
-                end
+local function scan()
+    for _, o in pairs(workspace:GetDescendants()) do
+        if o:IsA("Model") or o:IsA("BasePart") then
+            if string.find(string.lower(o.Name), "egg") then
+                local p = o:IsA("BasePart") and o or o:FindFirstChildWhichIsA("BasePart")
+                if p and not list[p] then addE(p, "🥚 " .. o.Name) end
             end
         end
     end
 end
 
-makeToggle(EggPage, "👁️ عرض البيض (ESP)", false, function(v)
-    espEnabled = v
-    if not v then clearESP() end
+mkTog(P3, "👁️ ESP البيض", false, function(v)
+    esp = v
+    if not v then clearE() end
 end)
 
 task.spawn(function()
-    while task.wait(2) do
-        if espEnabled then scanEggs() end
-    end
+    while task.wait(2) do if esp then scan() end end
 end)
 
-makeBtn(EggPage, "🚀 اذهب لأقرب بيضة", function()
+mkBtn(P3, "🚀 روح لأقرب بيضة", function()
     local c = player.Character
     if not c then return end
     local hrp = c:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-    local closest, dist = nil, math.huge
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") then
-            local n = string.lower(obj.Name)
-            if string.find(n, "egg") then
-                local d = (obj.Position - hrp.Position).Magnitude
-                if d < dist then dist = d; closest = obj end
-            end
+    local cl, d = nil, math.huge
+    for _, o in pairs(workspace:GetDescendants()) do
+        if o:IsA("BasePart") and string.find(string.lower(o.Name), "egg") then
+            local dd = (o.Position - hrp.Position).Magnitude
+            if dd < d then d = dd; cl = o end
         end
     end
-    if closest then
-        pcall(function() hrp.CFrame = closest.CFrame + Vector3.new(0, 3, 0) end)
-    end
+    if cl then pcall(function() hrp.CFrame = cl.CFrame + Vector3.new(0, 3, 0) end) end
 end)
 
--- ============================================
--- ===== Misc =====
--- ============================================
-makeBtn(MiscPage, "📋 نسخ رابط قناتي", function()
-    setclipboard("https://t.me/YJW_m")
-    print("Telegram: https://t.me/YJW_m")
-end)
-
-makeToggle(MiscPage, "🐌 خفض الجرافيك (FPS Boost)", false, function(v)
-    if v then
-        for _, obj in pairs(workspace:GetDescendants()) do
-            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Smoke") or obj:IsA("Fire") or obj:IsA("Sparkles") then
-                obj.Enabled = false
-            end
-        end
-        game.Lighting.GlobalShadows = false
-        game.Lighting.FogEnd = 100000
-    else
-        game.Lighting.GlobalShadows = true
-        game.Lighting.FogEnd = 100000
-    end
-end)
-
-makeBtn(MiscPage, "🔄 إعادة تشغيل اللعبة", function()
-    TPS:Teleport(game.PlaceId, player)
-end)
-
-makeBtn(MiscPage, "❌ إغلاق الواجهة", function()
-    ScreenGui:Destroy()
-end)
-
-print("YJW HUB | POWERED Loaded ✅")
-print("Telegram: https://t.me/YJW_m")
+print("✅ YJW HUB Loaded | Delta Edition")
