@@ -331,48 +331,10 @@ pages.MISC = function()
     label("MISCELLANEOUS", 40)
     toggle("Example toggle", false)
     toggle("Example loop toggle", false)
-
-    button("RESET DEMO SETTINGS", function()
-        pages.MISC()
-    end)
-
-    label("Settings here are temporary for this session.", 40,
-        Color3.fromRGB(48, 39, 22))
-end
-
-local function showTab(name)
-    activeTab = name
-    for tabName, b in pairs(tabButtons) do
-        b.BackgroundColor3 = tabName == name
-            and Color3.fromRGB(28, 100, 49)
-            or Color3.fromRGB(24, 40, 29)
+    kjwjaj) 
+end 
     end
-    pages[name]()
-end
-
-local tabNames = {
-    {"HOME", "HOME"},
-    {"STEAL", "STEAL"},
-    {"PLAYER", "PLAYER"},
-    {"EGGS", "EGGS"},
-    {"MISC", "MISC"}
-}
-
-for _, info in ipairs(tabNames) do
-    local name, caption = info[1], info[2]
-    local b = make("TextButton", {
-        Size = UDim2.new(0, 55, 1, 0),
-        BackgroundColor3 = Color3.fromRGB(24, 40, 29),
-        Text = caption,
-        TextColor3 = Color3.new(1, 1, 1),
-        TextSize = 10,
-        Font = Enum.Font.GothamBold
-    }, tabs)
-    round(b, 7)
-    tabButtons[name] = b
-    b.Activated:Connect(function()
-        showTab(name)
-    end)
-end
-
-showTab("EGGS")
+kwj iwnn kqmnqhg1686168168l
+kajbsieb("Example loop toggle" false) 
+kBVwjbjqa ("Example loop toggle.50) 
+ksnnej("Example loop toggle". jw
