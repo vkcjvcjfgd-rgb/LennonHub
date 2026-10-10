@@ -1,0 +1,428 @@
+-- ===== مطور يوسف HUB | Blox Fruits =====
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "مطور يوسف HUB",
+    LoadingTitle = "مطور يوسف HUB",
+    LoadingSubtitle = "Blox Fruits",
+    ConfigurationSaving = { Enabled = false },
+    KeySystem = false,
+})
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local P = Players.LocalPlayer
+local Cam = workspace.CurrentCamera
+
+-- ==========================================
+-- 🗺️ Main Tab
+-- ==========================================
+local MainTab = Window:CreateTab("الرئيسية", nil)
+
+MainTab:CreateSection("معلومات")
+MainTab:CreateParagraph({
+    Title = "مطور يوسف HUB",
+    Content = "Blox Fruits Script\nTelegram: t.me/YJW_m",
+})
+
+MainTab:CreateButton({
+    Name = "📋 نسخ رابط قناتي",
+    Callback = function()
+        setclipboard("https://t.me/YJW_m")
+        Rayfield:Notify({Title = "مطور يوسف", Content = "تم نسخ الرابط", Duration = 2})
+    end,
+})
+
+-- ==========================================
+-- 🔍 ESP Tab
+-- ==========================================
+local EspTab = Window:CreateTab("ESP", nil)
+
+EspTab:CreateSection("ESP Elements")
+
+local espObjects = {}
+
+local function createESP(part, txt, color)
+    if espObjects[part] then return end
+    local bb = Instance.new("BillboardGui", part)
+    bb.Size = UDim2.new(0, 150, 0, 35)
+    bb.StudsOffset = Vector3.new(0, 3, 0)
+    bb.AlwaysOnTop = true
+    local l = Instance.new("TextLabel", bb)
+    l.Size = UDim2.new(1, 0, 1, 0)
+    l.BackgroundTransparency = 0.3
+    l.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    l.TextColor3 = color or Color3.fromRGB(255, 220, 50)
+    l.Font = Enum.Font.GothamBold
+    l.TextSize = 12
+    l.Text = txt
+    l.Parent = bb
+    espObjects[part] = bb
+end
+
+local function clearESP()
+    for _, g in pairs(espObjects) do
+        if g and g.Parent then g:Destroy() end
+    end
+    espObjects = {}
+end
+
+local espBerries = false
+local espFruits = false
+local espChests = false
+local espFlowers = false
+local espSwords = false
+local espPlayers = false
+
+-- ESP Berries
+EspTab:CreateToggle({
+    Name = "🥭 ESP Berries",
+    CurrentValue = false,
+    Flag = "EspBerries",
+    Callback = function(v) espBerries = v; if not v then clearESP() end end,
+})
+
+-- ESP Fruits
+EspTab:CreateToggle({
+    Name = "🍎 ESP Fruits",
+    CurrentValue = false,
+    Flag = "EspFruits",
+    Callback = function(v) espFruits = v; if not v then clearESP() end end,
+})
+
+-- ESP Chests
+EspTab:CreateToggle({
+    Name = "📦 ESP Chests",
+    CurrentValue = false,
+    Flag = "EspChests",
+    Callback = function(v) espChests = v; if not v then clearESP() end end,
+})
+
+-- ESP Flowers
+EspTab:CreateToggle({
+    Name = "🌸 ESP Flower",
+    CurrentValue = false,
+    Flag = "EspFlowers",
+    Callback = function(v) espFlowers = v; if not v then clearESP() end end,
+})
+
+-- ESP Swords
+EspTab:CreateToggle({
+    Name = "⚔️ ESP Legendary Sword",
+    CurrentValue = false,
+    Flag = "EspSwords",
+    Callback = function(v) espSwords = v; if not v then clearESP() end end,
+})
+
+-- ESP Players
+EspTab:CreateToggle({
+    Name = "👤 ESP Players",
+    CurrentValue = false,
+    Flag = "EspPlayers",
+    Callback = function(v) espPlayers = v; if not v then clearESP() end end,
+})
+
+-- ESP Loop
+task.spawn(function()
+    while task.wait(2) do
+        if espBerries or espFruits or espChests or espFlowers or espSwords or espPlayers then
+            for _, obj in pairs(workspace:GetDescendants()) do
+                if obj:IsA("BasePart") or obj:IsA("Model") then
+                    local n = string.lower(obj.Name)
+                    local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart")
+                    if part then
+                        if espBerries and string.find(n, "berry") then
+                            createESP(part, "🥭 " .. obj.Name, Color3.fromRGB(255, 100, 100))
+                        end
+                        if espFruits and string.find(n, "fruit") then
+                            createESP(part, "🍎 " .. obj.Name, Color3.fromRGB(255, 180, 50))
+                        end
+                        if espChests and string.find(n, "chest") then
+                            createESP(part, "📦 " .. obj.Name, Color3.fromRGB(255, 220, 50))
+                        end
+                        if espFlowers and string.find(n, "flower") then
+                            createESP(part, "🌸 " .. obj.Name, Color3.fromRGB(200, 150, 255))
+                        end
+                        if espSwords and (string.find(n, "sword") or string.find(n, "legendary")) then
+                            createESP(part, "⚔️ " .. obj.Name, Color3.fromRGB(150, 200, 255))
+                        end
+                    end
+                end
+            end
+            if espPlayers then
+                for _, plr in pairs(Players:GetPlayers()) do
+                    if plr ~= P and plr.Character then
+                        local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            createESP(hrp, "👤 " .. plr.Name, Color3.fromRGB(80, 220, 120))
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- 🎮 Player Tab
+-- ==========================================
+local PlayerTab = Window:CreateTab("اللاعب", nil)
+
+PlayerTab:CreateSection("الحركة")
+
+local speed = 16
+PlayerTab:CreateSlider({
+    Name = "🏃 السرعة",
+    Range = {16, 300},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "Speed",
+    Callback = function(v) speed = v end,
+})
+
+local jump = 50
+PlayerTab:CreateSlider({
+    Name = "🦘 القفز",
+    Range = {50, 500},
+    Increment = 5,
+    Suffix = "Power",
+    CurrentValue = 50,
+    Flag = "Jump",
+    Callback = function(v) jump = v end,
+})
+
+_G.infJump = false
+PlayerTab:CreateToggle({
+    Name = "🦅 قفز لا نهائي",
+    CurrentValue = false,
+    Flag = "InfJump",
+    Callback = function(v) _G.infJump = v end,
+})
+
+_G.fly = false
+PlayerTab:CreateToggle({
+    Name = "✈️ طيران (Fly)",
+    CurrentValue = false,
+    Flag = "Fly",
+    Callback = function(v) _G.fly = v end,
+})
+
+_G.nc = false
+PlayerTab:CreateToggle({
+    Name = "👻 Noclip",
+    CurrentValue = false,
+    Flag = "Noclip",
+    Callback = function(v) _G.nc = v end,
+})
+
+task.spawn(function()
+    while task.wait(0.1) do
+        local c = P.Character
+        if c then
+            local h = c:FindFirstChildOfClass("Humanoid")
+            if h then h.WalkSpeed = speed; h.JumpPower = jump end
+        end
+    end
+end)
+
+UIS.JumpRequest:Connect(function()
+    if _G.infJump then
+        local c = P.Character
+        if c and c:FindFirstChildOfClass("Humanoid") then
+            c:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+        end
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    if _G.nc and P.Character then
+        for _, p in pairs(P.Character:GetDescendants()) do
+            if p:IsA("BasePart") then p.CanCollide = false end
+        end
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        if _G.fly then
+            local c = P.Character
+            if c then
+                local hrp = c:FindFirstChild("HumanoidRootPart")
+                if hrp and not hrp:FindFirstChild("YF") then
+                    local g = Instance.new("BodyGyro", hrp); g.Name = "YF"
+                    g.P = 9e4; g.MaxTorque = Vector3.new(9e9,9e9,9e9); g.CFrame = hrp.CFrame
+                    local v = Instance.new("BodyVelocity", hrp); v.Name = "YFV"
+                    v.Velocity = Vector3.new(0,0,0); v.MaxForce = Vector3.new(9e9,9e9,9e9)
+                end
+                if hrp then
+                    local v = hrp:FindFirstChild("YFV")
+                    if v then
+                        local m = Vector3.new(0,0,0)
+                        if UIS:IsKeyDown(Enum.KeyCode.W) then m = m + Cam.CFrame.LookVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.S) then m = m - Cam.CFrame.LookVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.A) then m = m - Cam.CFrame.RightVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.D) then m = m + Cam.CFrame.RightVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.Space) then m = m + Vector3.new(0,1,0) end
+                        v.Velocity = m * 80
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- 🎯 Aimbot & Combat Tab
+-- ==========================================
+local CombatTab = Window:CreateTab("القتال", nil)
+
+CombatTab:CreateSection("Aimbot")
+
+_G.aimbot = false
+CombatTab:CreateToggle({
+    Name = "🎯 Aimbot",
+    CurrentValue = false,
+    Flag = "Aimbot",
+    Callback = function(v) _G.aimbot = v end,
+})
+
+_G.autoAttack = false
+CombatTab:CreateToggle({
+    Name = "⚔️ Auto Attack",
+    CurrentValue = false,
+    Flag = "AutoAttack",
+    Callback = function(v) _G.autoAttack = v end,
+})
+
+_G.autoSkill = false
+CombatTab:CreateToggle({
+    Name = "✨ Auto Skill",
+    CurrentValue = false,
+    Flag = "AutoSkill",
+    Callback = function(v) _G.autoSkill = v end,
+})
+
+-- Aimbot Loop
+task.spawn(function()
+    while task.wait(0.1) do
+        if _G.aimbot and P.Character then
+            local hrp = P.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                local closest, dist = nil, math.huge
+                for _, plr in pairs(Players:GetPlayers()) do
+                    if plr ~= P and plr.Character then
+                        local t = plr.Character:FindFirstChild("HumanoidRootPart")
+                        if t then
+                            local d = (t.Position - hrp.Position).Magnitude
+                            if d < dist and d < 100 then dist = d; closest = t end
+                        end
+                    end
+                end
+                if closest then
+                    Cam.CFrame = CFrame.new(Cam.CFrame.Position, closest.Position)
+                end
+            end
+        end
+    end
+end)
+
+-- Auto Attack
+task.spawn(function()
+    while task.wait(0.3) do
+        if _G.autoAttack and P.Character then
+            local tool = P.Character:FindFirstChildOfClass("Tool")
+            if tool then
+                pcall(function() tool:Activate() end)
+            end
+        end
+    end
+end)
+
+-- Auto Skill
+task.spawn(function()
+    while task.wait(0.5) do
+        if _G.autoSkill and P.Character then
+            local tool = P.Character:FindFirstChildOfClass("Tool")
+            if tool then
+                pcall(function() tool:Activate() end)
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- 🚀 Teleport Tab
+-- ==========================================
+local TeleTab = Window:CreateTab("Teleport", nil)
+
+TeleTab:CreateSection("أماكن سريعة")
+
+TeleTab:CreateButton({
+    Name = "🏝️ انتقل لأول جزيرة",
+    Callback = function()
+        local c = P.Character
+        if c and c:FindFirstChild("HumanoidRootPart") then
+            c.HumanoidRootPart.CFrame = CFrame.new(0, 100, 0)
+        end
+    end,
+})
+
+TeleTab:CreateButton({
+    Name = "🎯 روح لأقرب جزيرة",
+    Callback = function()
+        -- يبحث عن أقرب جزيرة
+        local c = P.Character
+        if not c then return end
+        local hrp = c:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+        local closest, dist = nil, math.huge
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and (string.find(string.lower(obj.Name), "island") or string.find(string.lower(obj.Name), "portal")) then
+                local d = (obj.Position - hrp.Position).Magnitude
+                if d < dist then dist = d; closest = obj end
+            end
+        end
+        if closest then
+            pcall(function() hrp.CFrame = closest.CFrame + Vector3.new(0, 5, 0) end)
+        end
+    end,
+})
+
+-- ==========================================
+-- ⚙️ Settings Tab
+-- ==========================================
+local SettingsTab = Window:CreateTab("الإعدادات", nil)
+
+SettingsTab:CreateSection("معلومات السكربت")
+
+SettingsTab:CreateParagraph({
+    Title = "مطور يوسف HUB",
+    Content = "الإصدار: 1.0\nصُنع بواسطة: مطور يوسف\nTelegram: t.me/YJW_m",
+})
+
+SettingsTab:CreateButton({
+    Name = "📋 نسخ رابط الديسكورد",
+    Callback = function()
+        setclipboard("https://t.me/YJW_m")
+        Rayfield:Notify({Title = "مطور يوسف", Content = "تم النسخ!", Duration = 2})
+    end,
+})
+
+SettingsTab:CreateButton({
+    Name = "🔄 إعادة تشغيل اللعبة",
+    Callback = function()
+        game:GetService("TeleportService"):Teleport(game.PlaceId, P)
+    end,
+})
+
+SettingsTab:CreateButton({
+    Name = "❌ إغلاق الواجهة",
+    Callback = function()
+        Rayfield:Destroy()
+    end,
+})
+
+print("⚡ مطور يوسف HUB | Blox Fruits Loaded ✅")
+print("Telegram: https://t.me/YJW_m")
