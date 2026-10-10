@@ -1,384 +1,378 @@
--- ===== مطور يوسف HUB | Blox Fruits =====
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+--  مطور يوسف | Mobile UI
+-- UI demo inspired by the supplied screenshot
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UIS = game:GetService("UserInputService")
-local RS = game:GetService("ReplicatedStorage")
-local TPS = game:GetService("TeleportService")
-local P = Players.LocalPlayer
-local PG = P:WaitForChild("PlayerGui")
-local Cam = workspace.CurrentCamera
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-local Window = Rayfield:CreateWindow({
-    Name = "مطور يوسف HUB",
-    LoadingTitle = "مطور يوسف HUB",
-    LoadingSubtitle = "Blox Fruits",
-    ConfigurationSaving = { Enabled = false },
-    KeySystem = false,
-})
+local old = playerGui:FindFirstChild("YOUSEF_HUB")
+if old then old:Destroy() end
 
--- ==========================================
--- 🏠 الرئيسية
--- ==========================================
-local HomeTab = Window:CreateTab("🏠 الرئيسية", nil)
+local gui = Instance.new("ScreenGui")
+gui.Name = "YOUSEF_HUB"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 99
+gui.Parent = playerGui
 
-HomeTab:CreateSection("المعلومات")
-HomeTab:CreateParagraph({
-    Title = "مطور يوسف HUB",
-    Content = "سكربت Blox Fruits\nصُنع بواسطة: مطور يوسف\nTelegram: t.me/YJW_m",
-})
-
-HomeTab:CreateButton({
-    Name = "📱 نسخ رابط التلغرام",
-    Callback = function()
-        setclipboard("https://t.me/YJW_m")
-        Rayfield:Notify({Title = "مطور يوسف", Content = "تم نسخ الرابط ✅", Duration = 2})
-    end,
-})
-
-HomeTab:CreateButton({
-    Name = "🔄 إعادة تشغيل اللعبة",
-    Callback = function()
-        TPS:Teleport(game.PlaceId, P)
-    end,
-})
-
--- ==========================================
--- 🎮 اللاعب
--- ==========================================
-local PlayerTab = Window:CreateTab("🎮 اللاعب", nil)
-PlayerTab:CreateSection("الحركة")
-
-local speed = 16
-PlayerTab:CreateSlider({
-    Name = "🏃 السرعة",
-    Range = {16, 300},
-    Increment = 1,
-    Suffix = "Speed",
-    CurrentValue = 16,
-    Flag = "Speed",
-    Callback = function(v) speed = v end,
-})
-
-local jump = 50
-PlayerTab:CreateSlider({
-    Name = "🦘 القفز",
-    Range = {50, 500},
-    Increment = 5,
-    Suffix = "Power",
-    CurrentValue = 50,
-    Flag = "Jump",
-    Callback = function(v) jump = v end,
-})
-
-_G.infJ = false
-PlayerTab:CreateToggle({
-    Name = "🦅 قفز لا نهائي",
-    CurrentValue = false,
-    Flag = "InfJump",
-    Callback = function(v) _G.infJ = v end,
-})
-
-_G.fly = false
-PlayerTab:CreateToggle({
-    Name = "✈️ طيران",
-    CurrentValue = false,
-    Flag = "Fly",
-    Callback = function(v) _G.fly = v end,
-})
-
-_G.flySp = 80
-PlayerTab:CreateSlider({
-    Name = "⚡ سرعة الطيران",
-    Range = {20, 300},
-    Increment = 5,
-    Suffix = "Speed",
-    CurrentValue = 80,
-    Flag = "FlySpeed",
-    Callback = function(v) _G.flySp = v end,
-})
-
-_G.nc = false
-PlayerTab:CreateToggle({
-    Name = "👻 Noclip",
-    CurrentValue = false,
-    Flag = "Noclip",
-    Callback = function(v) _G.nc = v end,
-})
-
-task.spawn(function()
-    while task.wait(0.1) do
-        local c = P.Character
-        if c then
-            local h = c:FindFirstChildOfClass("Humanoid")
-            if h then h.WalkSpeed = speed; h.JumpPower = jump end
-        end
+local function make(class, props, parent)
+    local obj = Instance.new(class)
+    for k, v in pairs(props) do
+        obj[k] = v
     end
-end)
-
-UIS.JumpRequest:Connect(function()
-    if _G.infJ then
-        local c = P.Character
-        if c and c:FindFirstChildOfClass("Humanoid") then
-            c:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-        end
-    end
-end)
-
-RunService.Stepped:Connect(function()
-    if _G.nc and P.Character then
-        for _, p in pairs(P.Character:GetDescendants()) do
-            if p:IsA("BasePart") then p.CanCollide = false end
-        end
-    end
-end)
-
-task.spawn(function()
-    while task.wait() do
-        if _G.fly then
-            local c = P.Character
-            if c then
-                local hrp = c:FindFirstChild("HumanoidRootPart")
-                if hrp and not hrp:FindFirstChild("YF") then
-                    local g = Instance.new("BodyGyro", hrp); g.Name = "YF"
-                    g.P = 9e4; g.MaxTorque = Vector3.new(9e9,9e9,9e9); g.CFrame = hrp.CFrame
-                    local v = Instance.new("BodyVelocity", hrp); v.Name = "YFV"
-                    v.Velocity = Vector3.new(0,0,0); v.MaxForce = Vector3.new(9e9,9e9,9e9)
-                end
-                if hrp then
-                    local v = hrp:FindFirstChild("YFV")
-                    if v then
-                        local m = Vector3.new(0,0,0)
-                        if UIS:IsKeyDown(Enum.KeyCode.W) then m = m + Cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.S) then m = m - Cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.A) then m = m - Cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.D) then m = m + Cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.Space) then m = m + Vector3.new(0,1,0) end
-                        v.Velocity = m * _G.flySp
-                    end
-                end
-            end
-        end
-    end
-end)
-
--- ==========================================
--- 👁️ ESP
--- ==========================================
-local EspTab = Window:CreateTab("👁️ ESP", nil)
-EspTab:CreateSection("العرض")
-
-local espObjects = {}
-
-local function createESP(part, txt, color)
-    if espObjects[part] then return end
-    local bb = Instance.new("BillboardGui", part)
-    bb.Size = UDim2.new(0, 150, 0, 35)
-    bb.StudsOffset = Vector3.new(0, 3, 0)
-    bb.AlwaysOnTop = true
-    local l = Instance.new("TextLabel", bb)
-    l.Size = UDim2.new(1, 0, 1, 0)
-    l.BackgroundTransparency = 0.3
-    l.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    l.TextColor3 = color or Color3.fromRGB(255, 220, 50)
-    l.TextStrokeTransparency = 0
-    l.Font = Enum.Font.GothamBold
-    l.TextSize = 12
-    l.Text = txt
-    l.Parent = bb
-    espObjects[part] = bb
+    obj.Parent = parent
+    return obj
 end
 
-local function clearESP()
-    for _, g in pairs(espObjects) do
-        if g and g.Parent then g:Destroy() end
-    end
-    espObjects = {}
+local function round(obj, radius)
+    make("UICorner", {
+        CornerRadius = UDim.new(0, radius)
+    }, obj)
 end
 
-local espFruits = false
-local espChests = false
-local espPlayers = false
-local espFlowers = false
+local green = Color3.fromRGB(0, 220, 100)
+local dark = Color3.fromRGB(9, 18, 12)
+local panel = Color3.fromRGB(15, 28, 19)
+local muted = Color3.fromRGB(125, 150, 132)
 
-EspTab:CreateToggle({
-    Name = "🍎 عرض الفواكه",
-    CurrentValue = false,
-    Flag = "EspFruits",
-    Callback = function(v) espFruits = v; if not v then clearESP() end end,
-})
+local main = make("Frame", {
+    Name = "Main",
+    Size = UDim2.new(0.91, 0, 0, 345),
+    Position = UDim2.new(0.045, 0, 0.42, 0),
+    BackgroundColor3 = dark,
+    BackgroundTransparency = 0.04,
+    BorderSizePixel = 0,
+    Active = true,
+    Draggable = true
+}, gui)
+round(main, 19)
 
-EspTab:CreateToggle({
-    Name = "📦 عرض الصناديق",
-    CurrentValue = false,
-    Flag = "EspChests",
-    Callback = function(v) espChests = v; if not v then clearESP() end end,
-})
+make("UIStroke", {
+    Color = Color3.fromRGB(36, 75, 43),
+    Thickness = 2
+}, main)
 
-EspTab:CreateToggle({
-    Name = "🌸 عرض الزهور",
-    CurrentValue = false,
-    Flag = "EspFlowers",
-    Callback = function(v) espFlowers = v; if not v then clearESP() end end,
-})
+make("UISizeConstraint", {
+    MinSize = Vector2.new(285, 345),
+    MaxSize = Vector2.new(460, 390)
+}, main)
 
-EspTab:CreateToggle({
-    Name = "👤 عرض اللاعبين",
-    CurrentValue = false,
-    Flag = "EspPlayers",
-    Callback = function(v) espPlayers = v; if not v then clearESP() end end,
-})
+local header = make("Frame", {
+    Size = UDim2.new(1, 0, 0, 67),
+    BackgroundColor3 = Color3.fromRGB(13, 24, 16),
+    BorderSizePixel = 0
+}, main)
+round(header, 18)
 
-task.spawn(function()
-    while task.wait(2) do
-        if espFruits or espChests or espFlowers then
-            for _, obj in pairs(workspace:GetDescendants()) do
-                if obj:IsA("BasePart") or obj:IsA("Model") then
-                    local n = string.lower(obj.Name)
-                    local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart")
-                    if part then
-                        if espFruits and string.find(n, "fruit") then
-                            createESP(part, "🍎 " .. obj.Name, Color3.fromRGB(255, 180, 50))
-                        end
-                        if espChests and string.find(n, "chest") then
-                            createESP(part, "📦 " .. obj.Name, Color3.fromRGB(255, 220, 50))
-                        end
-                        if espFlowers and string.find(n, "flower") then
-                            createESP(part, "🌸 " .. obj.Name, Color3.fromRGB(200, 150, 255))
-                        end
-                    end
-                end
-            end
-        end
-        if espPlayers then
-            for _, plr in pairs(Players:GetPlayers()) do
-                if plr ~= P and plr.Character then
-                    local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
-                    if hrp then
-                        createESP(hrp, "👤 " .. plr.Name, Color3.fromRGB(80, 220, 120))
-                    end
-                end
-            end
-        end
-    end
+make("TextLabel", {
+    Position = UDim2.new(0, 16, 0, 10),
+    Size = UDim2.new(0.66, 0, 0, 29),
+    BackgroundTransparency = 1,
+    Text = "YOUSEF HUB",
+    Font = Enum.Font.GothamBold,
+    TextSize = 20,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    TextColor3 = Color3.fromRGB(245, 250, 244)
+}, header)
+
+make("TextLabel", {
+    Position = UDim2.new(0, 17, 0, 38),
+    Size = UDim2.new(0.7, 0, 0, 17),
+    BackgroundTransparency = 1,
+    Text = "EGG SYSTEM  •  MOBILE",
+    Font = Enum.Font.GothamBold,
+    TextSize = 9,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    TextColor3 = muted
+}, header)
+
+local close = make("TextButton", {
+    Position = UDim2.new(1, -43, 0, 16),
+    Size = UDim2.new(0, 29, 0, 29),
+    BackgroundColor3 = Color3.fromRGB(27, 43, 32),
+    Text = "×",
+    TextSize = 23,
+    Font = Enum.Font.GothamBold,
+    TextColor3 = Color3.new(1, 1, 1)
+}, header)
+round(close, 10)
+close.Activated:Connect(function()
+    gui:Destroy()
 end)
 
--- ==========================================
--- ⚔️ القتال
--- ==========================================
-local CombatTab = Window:CreateTab("⚔️ القتال", nil)
-CombatTab:CreateSection("Combat")
+local minimize = make("TextButton", {
+    Position = UDim2.new(1, -78, 0, 16),
+    Size = UDim2.new(0, 29, 0, 29),
+    BackgroundColor3 = Color3.fromRGB(27, 43, 32),
+    Text = "−",
+    TextSize = 23,
+    Font = Enum.Font.GothamBold,
+    TextColor3 = Color3.new(1, 1, 1)
+}, header)
+round(minimize, 10)
 
-_G.aimbot = false
-CombatTab:CreateToggle({
-    Name = "🎯 Aimbot",
-    CurrentValue = false,
-    Flag = "Aimbot",
-    Callback = function(v) _G.aimbot = v end,
-})
+local reopen = make("TextButton", {
+    Size = UDim2.new(0, 125, 0, 42),
+    Position = UDim2.new(0, 12, 0.5, 0),
+    BackgroundColor3 = Color3.fromRGB(12, 30, 18),
+    Text = "YOUSEF HUB  +",
+    TextColor3 = green,
+    TextSize = 13,
+    Font = Enum.Font.GothamBold,
+    Visible = false
+}, gui)
+round(reopen, 10)
 
-_G.autoAttack = false
-CombatTab:CreateToggle({
-    Name = "⚔️ هجوم تلقائي",
-    CurrentValue = false,
-    Flag = "AutoAttack",
-    Callback = function(v) _G.autoAttack = v end,
-})
-
-task.spawn(function()
-    while task.wait(0.1) do
-        if _G.aimbot and P.Character then
-            local hrp = P.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local closest, dist = nil, math.huge
-                for _, plr in pairs(Players:GetPlayers()) do
-                    if plr ~= P and plr.Character then
-                        local t = plr.Character:FindFirstChild("HumanoidRootPart")
-                        if t then
-                            local d = (t.Position - hrp.Position).Magnitude
-                            if d < dist and d < 100 then dist = d; closest = t end
-                        end
-                    end
-                end
-                if closest then
-                    Cam.CFrame = CFrame.new(Cam.CFrame.Position, closest.Position)
-                end
-            end
-        end
-    end
+minimize.Activated:Connect(function()
+    main.Visible = false
+    reopen.Visible = true
 end)
 
-task.spawn(function()
-    while task.wait(0.3) do
-        if _G.autoAttack and P.Character then
-            local tool = P.Character:FindFirstChildOfClass("Tool")
-            if tool then pcall(function() tool:Activate() end) end
-        end
-    end
+reopen.Activated:Connect(function()
+    main.Visible = true
+    reopen.Visible = false
 end)
 
--- ==========================================
--- 🚀 Teleport
--- ==========================================
-local TeleTab = Window:CreateTab("🚀 Teleport", nil)
-TeleTab:CreateSection("أماكن")
+local tabs = make("Frame", {
+    Position = UDim2.new(0, 10, 0, 74),
+    Size = UDim2.new(1, -20, 0, 35),
+    BackgroundTransparency = 1
+}, main)
 
-TeleTab:CreateButton({
-    Name = "🏝️ الجزيرة الأولى",
-    Callback = function()
-        local c = P.Character
-        if c and c:FindFirstChild("HumanoidRootPart") then
-            c.HumanoidRootPart.CFrame = CFrame.new(0, 100, 0)
+local tabLayout = make("UIListLayout", {
+    FillDirection = Enum.FillDirection.Horizontal,
+    Padding = UDim.new(0, 5),
+    HorizontalAlignment = Enum.HorizontalAlignment.Center
+}, tabs)
+
+local body = make("ScrollingFrame", {
+    Position = UDim2.new(0, 10, 0, 117),
+    Size = UDim2.new(1, -20, 1, -127),
+    BackgroundColor3 = panel,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 3,
+    AutomaticCanvasSize = Enum.AutomaticSize.Y,
+    CanvasSize = UDim2.new(0, 0, 0, 0)
+}, main)
+round(body, 13)
+
+make("UIPadding", {
+    PaddingTop = UDim.new(0, 9),
+    PaddingLeft = UDim.new(0, 9),
+    PaddingRight = UDim.new(0, 9),
+    PaddingBottom = UDim.new(0, 9)
+}, body)
+
+make("UIListLayout", {
+    Padding = UDim.new(0, 7),
+    SortOrder = Enum.SortOrder.LayoutOrder
+}, body)
+
+local function clearBody()
+    for _, child in ipairs(body:GetChildren()) do
+        if child:IsA("GuiObject")
+            and not child:IsA("UIListLayout")
+            and not child:IsA("UIPadding") then
+            child:Destroy()
         end
-    end,
-})
+    end
+end
 
-local savedPos = nil
-TeleTab:CreateButton({
-    Name = "💾 حفظ موقعي الحالي",
-    Callback = function()
-        local c = P.Character
-        if c and c:FindFirstChild("HumanoidRootPart") then
-            savedPos = c.HumanoidRootPart.CFrame
-            Rayfield:Notify({Title = "مطور يوسف", Content = "تم حفظ الموقع ✅", Duration = 2})
-        end
-    end,
-})
+local function label(text, height, color, textColor)
+    local l = make("TextLabel", {
+        Size = UDim2.new(1, -2, 0, height or 36),
+        BackgroundColor3 = color or Color3.fromRGB(22, 39, 27),
+        BorderSizePixel = 0,
+        Text = text,
+        TextColor3 = textColor or Color3.fromRGB(235, 243, 236),
+        Font = Enum.Font.GothamMedium,
+        TextSize = 13,
+        TextWrapped = true
+    }, body)
+    round(l, 9)
+    return l
+end
 
-TeleTab:CreateButton({
-    Name = "↩️ العودة للموقع المحفوظ",
-    Callback = function()
-        local c = P.Character
-        if c and c:FindFirstChild("HumanoidRootPart") and savedPos then
-            c.HumanoidRootPart.CFrame = savedPos
-        end
-    end,
-})
+local function button(text, callback)
+    local b = make("TextButton", {
+        Size = UDim2.new(1, -2, 0, 39),
+        BackgroundColor3 = Color3.fromRGB(26, 48, 32),
+        BorderSizePixel = 0,
+        Text = text,
+        TextColor3 = Color3.fromRGB(245, 250, 245),
+        Font = Enum.Font.GothamBold,
+        TextSize = 13,
+        TextWrapped = true
+    }, body)
+    round(b, 9)
+    b.Activated:Connect(callback)
+    return b
+end
 
--- ==========================================
--- ⚙️ الإعدادات
--- ==========================================
-local SettingsTab = Window:CreateTab("⚙️ الإعدادات", nil)
-SettingsTab:CreateSection("المعلومات")
+local function toggle(text, initial)
+    local enabled = initial or false
+    local b
 
-SettingsTab:CreateParagraph({
-    Title = "مطور يوسف HUB",
-    Content = "الإصدار: 1.0\nاللعبة: Blox Fruits\nTelegram: t.me/YJW_m",
-})
+    local function update()
+        b.Text = text .. (enabled and "   [ ON ]" or "   [ OFF ]")
+        b.BackgroundColor3 = enabled
+            and Color3.fromRGB(25, 100, 52)
+            or Color3.fromRGB(26, 48, 32)
+    end
 
-SettingsTab:CreateButton({
-    Name = "📱 نسخ التلغرام",
-    Callback = function()
-        setclipboard("https://t.me/YJW_m")
-        Rayfield:Notify({Title = "مطور يوسف", Content = "تم النسخ ✅", Duration = 2})
-    end,
-})
+    b = button("", function()
+        enabled = not enabled
+        update()
+    end)
+    update()
+    return function()
+        return enabled
+    end
+end
 
-SettingsTab:CreateButton({
-    Name = "❌ إغلاق الواجهة",
-    Callback = function() Rayfield:Destroy() end,
-})
+local currentEgg = 1
+local eggs = {
+    {
+        name = "Pure Jellyfish",
+        rarity = "Secret",
+        value = "209.36M",
+        rewards = {
+            "Pure Jellyfish  |  5%",
+            "Golden Fish     |  20%",
+            "Blue Bunny      |  35%",
+            "Green Cat       |  40%"
+        }
+    },
+    {
+        name = "Common Egg",
+        rarity = "Common",
+        value = "100",
+        rewards = {
+            "Bunny   |  50%",
+            "Cat     |  30%",
+            "Fox     |  15%",
+            "Dragon  |  5%"
+        }
+    }
+}
 
-print("⚡ مطور يوسف HUB | Blox Fruits Loaded ✅")
-print("Telegram: https://t.me/YJW_m")
+local pages = {}
+local activeTab = "EGGS"
+local tabButtons = {}
+
+pages.HOME = function()
+    clearBody()
+    label("WELCOME TO YOUSEF HUB", 42)
+    label("Mobile interface demo", 34, dark, muted)
+    button("OPEN EGG INFORMATION", function()
+        pages.EGGS()
+        activeTab = "EGGS"
+    end)
+    label("Player: " .. player.Name, 35)
+    label("This interface demo does not modify game data.", 45,
+        Color3.fromRGB(48, 39, 22))
+end
+
+pages.STEAL = function()
+    clearBody()
+    label("STEAL  •  DEMO ONLY", 40)
+    label("This panel does not steal items or interact with other players.", 58)
+    toggle("Demo switch", false)
+    toggle("Loop demo switch", false)
+    label("Connect only to features in your own game.", 42,
+        Color3.fromRGB(48, 39, 22))
+end
+
+pages.PLAYER = function()
+    clearBody()
+    label("PLAYER INFORMATION", 40)
+    label("Username: " .. player.Name, 35)
+    label("Display name: " .. player.DisplayName, 35)
+    label("User ID: " .. tostring(player.UserId), 35)
+    toggle("Example player option", false)
+end
+
+pages.EGGS = function()
+    clearBody()
+    local egg = eggs[currentEgg]
+
+    label("EGG SYSTEM", 38)
+
+    label("🥚  " .. egg.name, 43)
+    label("RARITY: " .. egg.rarity, 31, dark, muted)
+    label("VALUE: " .. egg.value, 36,
+        Color3.fromRGB(12, 49, 26), green)
+
+    button("‹ PREVIOUS EGG", function()
+        currentEgg = currentEgg == 1 and #eggs or currentEgg - 1
+        pages.EGGS()
+    end)
+
+    button("NEXT EGG  ›", function()
+        currentEgg = currentEgg % #eggs + 1
+        pages.EGGS()
+    end)
+
+    label("PRIZE CHANCES", 34)
+
+    for _, reward in ipairs(egg.rewards) do
+        label(reward, 31)
+    end
+
+    button("SIMULATE EGG", function()
+        local result = egg.rewards[math.random(1, #egg.rewards)]
+        label("SIMULATED RESULT: " .. result, 42,
+            Color3.fromRGB(12, 65, 32), green)
+    end)
+end
+
+pages.MISC = function()
+    clearBody()
+    label("MISCELLANEOUS", 40)
+    toggle("Example toggle", false)
+    toggle("Example loop toggle", false)
+
+    button("RESET DEMO SETTINGS", function()
+        pages.MISC()
+    end)
+
+    label("Settings here are temporary for this session.", 40,
+        Color3.fromRGB(48, 39, 22))
+end
+
+local function showTab(name)
+    activeTab = name
+    for tabName, b in pairs(tabButtons) do
+        b.BackgroundColor3 = tabName == name
+            and Color3.fromRGB(28, 100, 49)
+            or Color3.fromRGB(24, 40, 29)
+    end
+    pages[name]()
+end
+
+local tabNames = {
+    {"HOME", "HOME"},
+    {"STEAL", "STEAL"},
+    {"PLAYER", "PLAYER"},
+    {"EGGS", "EGGS"},
+    {"MISC", "MISC"}
+}
+
+for _, info in ipairs(tabNames) do
+    local name, caption = info[1], info[2]
+    local b = make("TextButton", {
+        Size = UDim2.new(0, 55, 1, 0),
+        BackgroundColor3 = Color3.fromRGB(24, 40, 29),
+        Text = caption,
+        TextColor3 = Color3.new(1, 1, 1),
+        TextSize = 10,
+        Font = Enum.Font.GothamBold
+    }, tabs)
+    round(b, 7)
+    tabButtons[name] = b
+    b.Activated:Connect(function()
+        showTab(name)
+    end)
+end
+
+showTab("EGGS")
