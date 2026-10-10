@@ -13,7 +13,7 @@ GUI.ResetOnSpawn = false
 GUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 GUI.Parent = PG
 
--- ===== الألوان (مثل Lennon Hub) =====
+-- ===== الألوان =====
 local BG_DARK = Color3.fromRGB(20, 24, 20)
 local BG_CARD = Color3.fromRGB(28, 32, 28)
 local BORDER = Color3.fromRGB(70, 100, 70)
@@ -22,7 +22,7 @@ local GREEN_BRIGHT = Color3.fromRGB(80, 220, 120)
 local TEXT_WHITE = Color3.fromRGB(255, 255, 255)
 local TEXT_GRAY = Color3.fromRGB(150, 160, 150)
 
--- ===== الإطار الرئيسي =====
+-- ===== الإطار =====
 local Main = Instance.new("CanvasGroup")
 Main.AnchorPoint = Vector2.new(.5, .5)
 Main.Position = UDim2.fromScale(.5, .5)
@@ -49,26 +49,20 @@ Header.Size = UDim2.new(1, -20, 0, 55)
 Header.Position = UDim2.fromOffset(10, 10)
 Header.BackgroundTransparency = 1
 
--- شعار دائري (زي Lennon)
-local Badge = Instance.new("Frame", Header)
+-- الشعار (صورة)
+local Badge = Instance.new("ImageLabel", Header)
 Badge.Size = UDim2.fromOffset(48, 48)
 Badge.Position = UDim2.fromOffset(5, 3)
 Badge.BackgroundColor3 = Color3.fromRGB(35, 45, 35)
 Badge.BorderSizePixel = 0
+Badge.Image = "rbxassetid://10806561240"
+Badge.ScaleType = Enum.ScaleType.Fit
 Instance.new("UICorner", Badge).CornerRadius = UDim.new(1, 0)
 
 local BadgeRing = Instance.new("UIStroke", Badge)
 BadgeRing.Color = GREEN
 BadgeRing.Thickness = 2
 BadgeRing.Transparency = 0.2
-
-local BadgeText = Instance.new("TextLabel", Badge)
-BadgeText.Size = UDim2.new(1, 0, 1, 0)
-BadgeText.BackgroundTransparency = 1
-BadgeText.Text = "Y"
-BadgeText.TextColor3 = GREEN
-BadgeText.Font = Enum.Font.GothamBlack
-BadgeText.TextSize = 22
 
 -- اسم الهاب
 local Title = Instance.new("TextLabel", Header)
@@ -91,28 +85,26 @@ Subtitle.Font = Enum.Font.GothamBold
 Subtitle.TextSize = 10
 Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
--- زر ديسكورد (أزرق مثل Lennon)
-local Discord = Instance.new("TextButton", Header)
+-- ديسكورد (صورة)
+local Discord = Instance.new("ImageButton", Header)
 Discord.AnchorPoint = Vector2.new(1, 0)
 Discord.Position = UDim2.new(1, -42, 0, 8)
 Discord.Size = UDim2.fromOffset(36, 36)
 Discord.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
 Discord.BorderSizePixel = 0
-Discord.Text = "D"
-Discord.TextColor3 = Color3.fromRGB(255, 255, 255)
-Discord.Font = Enum.Font.GothamBlack
-Discord.TextSize = 18
+Discord.Image = "rbxassetid://10367063084"
+Discord.ScaleType = Enum.ScaleType.Fit
 Discord.AutoButtonColor = false
 Instance.new("UICorner", Discord).CornerRadius = UDim.new(1, 0)
 Discord.MouseButton1Click:Connect(function()
     setclipboard("https://t.me/YJW_m")
-    Discord.Text = "✓"
+    Discord.Image = "rbxassetid://6031091004"
     task.delay(1, function()
-        if Discord.Parent then Discord.Text = "D" end
+        if Discord.Parent then Discord.Image = "rbxassetid://10367063084" end
     end)
 end)
 
--- زر الإغلاق
+-- إغلاق
 local Close = Instance.new("TextButton", Header)
 Close.AnchorPoint = Vector2.new(1, 0)
 Close.Position = UDim2.new(1, 0, 0, 12)
@@ -140,22 +132,16 @@ EggStroke.Color = BORDER
 EggStroke.Thickness = 1
 EggStroke.Transparency = 0.5
 
--- صورة البيضة
-local EggIcon = Instance.new("Frame", EggCard)
+-- صورة البيضة (صورة أسد مثل Lennon)
+local EggIcon = Instance.new("ImageLabel", EggCard)
 EggIcon.Position = UDim2.fromOffset(10, 11)
 EggIcon.Size = UDim2.fromOffset(50, 50)
 EggIcon.BackgroundColor3 = Color3.fromRGB(18, 22, 18)
 EggIcon.BorderSizePixel = 0
+EggIcon.Image = "rbxassetid://10806561240"
+EggIcon.ScaleType = Enum.ScaleType.Fit
 Instance.new("UICorner", EggIcon).CornerRadius = UDim.new(0, 10)
 
-local EggEmoji = Instance.new("TextLabel", EggIcon)
-EggEmoji.Size = UDim2.new(1, 0, 1, 0)
-EggEmoji.BackgroundTransparency = 1
-EggEmoji.Text = "🐟"
-EggEmoji.TextSize = 28
-EggEmoji.Font = Enum.Font.GothamBold
-
--- نصوص البيضة
 local EggLabel = Instance.new("TextLabel", EggCard)
 EggLabel.Position = UDim2.fromOffset(72, 10)
 EggLabel.Size = UDim2.new(1, -200, 0, 14)
@@ -186,7 +172,6 @@ EggRarity.Font = Enum.Font.Gotham
 EggRarity.TextSize = 11
 EggRarity.TextXAlignment = Enum.TextXAlignment.Left
 
--- القيمة
 local Value = Instance.new("TextLabel", EggCard)
 Value.AnchorPoint = Vector2.new(1, 0)
 Value.Position = UDim2.new(1, -45, 0, 24)
@@ -198,7 +183,6 @@ Value.Font = Enum.Font.GothamBlack
 Value.TextSize = 16
 Value.TextXAlignment = Enum.TextXAlignment.Right
 
--- سهم
 local Arrow = Instance.new("TextLabel", EggCard)
 Arrow.AnchorPoint = Vector2.new(1, 0)
 Arrow.Position = UDim2.new(1, -15, 0, 25)
@@ -209,7 +193,7 @@ Arrow.TextColor3 = Color3.fromRGB(200, 200, 200)
 Arrow.Font = Enum.Font.GothamBold
 Arrow.TextSize = 20
 
--- ===== صف TELEGUIADO =====
+-- ===== TELEGUIADO =====
 local TeleFrame = Instance.new("Frame", Main)
 TeleFrame.Position = UDim2.fromOffset(15, 160)
 TeleFrame.Size = UDim2.new(1, -30, 0, 55)
@@ -243,7 +227,6 @@ TeleSub.Font = Enum.Font.GothamBold
 TeleSub.TextSize = 9
 TeleSub.TextXAlignment = Enum.TextXAlignment.Left
 
--- Loop
 local LoopLabel = Instance.new("TextLabel", TeleFrame)
 LoopLabel.AnchorPoint = Vector2.new(1, 0)
 LoopLabel.Position = UDim2.new(1, -75, 0, 18)
@@ -327,7 +310,6 @@ task.spawn(function()
     end
 end)
 
--- حركة الظهور
 TweenService:Create(Main, TweenInfo.new(.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
     GroupTransparency = 0
 }):Play()
