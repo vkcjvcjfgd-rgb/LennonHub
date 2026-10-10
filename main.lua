@@ -1,417 +1,274 @@
--- ===== مطور يوسف | Steal an Egg =====
+-- ===== مطور يوسف HUB | Steal an Egg =====
 local Players = game:GetService("Players")
-local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local RS = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 local P = Players.LocalPlayer
 local PG = P:WaitForChild("PlayerGui")
-local Cam = workspace.CurrentCamera
 
-local old = PG:FindFirstChild("YousefHub")
+local old = PG:FindFirstChild("YousefHubUI")
 if old then old:Destroy() end
 
 local GUI = Instance.new("ScreenGui")
-GUI.Name = "YousefHub"
+GUI.Name = "YousefHubUI"
 GUI.ResetOnSpawn = false
+GUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 GUI.Parent = PG
 
--- الألوان
-local RED = Color3.fromRGB(220, 38, 38)
-local BG = Color3.fromRGB(15, 15, 20)
-local ITEM = Color3.fromRGB(35, 35, 45)
-local GREEN = Color3.fromRGB(60, 220, 100)
-local GRAY = Color3.fromRGB(80, 80, 95)
-
--- الإطار الرئيسي
-local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 580, 0, 380)
-Main.Position = UDim2.new(0.5, -290, 0.5, -190)
-Main.BackgroundColor3 = BG
+-- ===== الإطار الرئيسي =====
+local Main = Instance.new("CanvasGroup")
+Main.AnchorPoint = Vector2.new(.5, .5)
+Main.Position = UDim2.fromScale(.5, .5)
+Main.Size = UDim2.fromOffset(520, 260)
+Main.BackgroundColor3 = Color3.fromRGB(18, 20, 18)
 Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
+Main.GroupTransparency = 1
 Main.Parent = GUI
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 16)
 
 local stroke = Instance.new("UIStroke", Main)
-stroke.Color = RED
-stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(60, 90, 60)
+stroke.Thickness = 1
+stroke.Transparency = 0.5
 
--- الهيدر
-local H = Instance.new("Frame", Main)
-H.Size = UDim2.new(1, 0, 0, 42)
-H.BackgroundColor3 = RED
-H.BorderSizePixel = 0
-Instance.new("UICorner", H).CornerRadius = UDim.new(0, 12)
+local scale = Instance.new("UIScale", Main)
+scale.Scale = .92
 
-local T = Instance.new("TextLabel", H)
-T.Size = UDim2.new(1, -60, 1, 0)
-T.Position = UDim2.new(0, 15, 0, 0)
-T.BackgroundTransparency = 1
-T.RichText = true
-T.Text = '<font color="rgb(255,255,255)">⚡ مطور يوسف ⚡</font>'
-T.TextColor3 = Color3.fromRGB(255, 255, 255)
-T.Font = Enum.Font.GothamBlack
-T.TextSize = 18
-T.TextXAlignment = Enum.TextXAlignment.Left
+-- ===== الهيدر =====
+local Header = Instance.new("Frame", Main)
+Header.Size = UDim2.new(1, -20, 0, 50)
+Header.Position = UDim2.fromOffset(10, 10)
+Header.BackgroundTransparency = 1
 
-local X = Instance.new("TextButton", H)
-X.Size = UDim2.new(0, 30, 0, 30)
-X.Position = UDim2.new(1, -38, 0, 6)
-X.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-X.Text = "✕"
-X.TextColor3 = Color3.fromRGB(255, 255, 255)
-X.Font = Enum.Font.GothamBold
-Instance.new("UICorner", X).CornerRadius = UDim.new(0, 6)
-X.MouseButton1Click:Connect(function() GUI:Destroy() end)
+-- شعار دائري
+local Badge = Instance.new("Frame", Header)
+Badge.Size = UDim2.fromOffset(45, 45)
+Badge.Position = UDim2.fromOffset(5, 2)
+Badge.BackgroundColor3 = Color3.fromRGB(40, 60, 40)
+Badge.BorderSizePixel = 0
+Instance.new("UICorner", Badge).CornerRadius = UDim.new(1, 0)
 
--- الأعمدة
-local LT = Instance.new("Frame", Main)
-LT.Size = UDim2.new(0, 115, 1, -55)
-LT.Position = UDim2.new(0, 8, 0, 50)
-LT.BackgroundTransparency = 1
-local LL = Instance.new("UIListLayout", LT)
-LL.Padding = UDim.new(0, 5)
+local BadgeRing = Instance.new("UIStroke", Badge)
+BadgeRing.Color = Color3.fromRGB(100, 200, 100)
+BadgeRing.Thickness = 2
+BadgeRing.Transparency = 0.3
 
-local C = Instance.new("Frame", Main)
-C.Size = UDim2.new(1, -135, 1, -55)
-C.Position = UDim2.new(0, 128, 0, 50)
-C.BackgroundColor3 = Color3.fromRGB(25, 25, 32)
-C.BorderSizePixel = 0
-Instance.new("UICorner", C).CornerRadius = UDim.new(0, 8)
+local BadgeText = Instance.new("TextLabel", Badge)
+BadgeText.Size = UDim2.new(1, 0, 1, 0)
+BadgeText.BackgroundTransparency = 1
+BadgeText.Text = "Y"
+BadgeText.TextColor3 = Color3.fromRGB(120, 220, 120)
+BadgeText.Font = Enum.Font.GothamBlack
+BadgeText.TextSize = 20
 
-local Sc = Instance.new("ScrollingFrame", C)
-Sc.Size = UDim2.new(1, -10, 1, -10)
-Sc.Position = UDim2.new(0, 5, 0, 5)
-Sc.BackgroundTransparency = 1
-Sc.BorderSizePixel = 0
-Sc.ScrollBarThickness = 3
-Sc.CanvasSize = UDim2.new(0, 0, 0, 0)
-Sc.AutomaticCanvasSize = Enum.AutomaticSize.Y
-local CL = Instance.new("UIListLayout", Sc)
-CL.Padding = UDim.new(0, 7)
+-- اسم الهاب
+local Title = Instance.new("TextLabel", Header)
+Title.Position = UDim2.fromOffset(60, 2)
+Title.Size = UDim2.new(1, -180, 0, 26)
+Title.BackgroundTransparency = 1
+Title.Text = "مطور يوسف"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 22
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- دوال المساعدة
-local function mkTab(txt, cb)
-    local b = Instance.new("TextButton", LT)
-    b.Size = UDim2.new(1, 0, 0, 40)
-    b.BackgroundColor3 = RED
-    b.Text = txt
-    b.TextColor3 = Color3.fromRGB(255, 255, 255)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 13
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-    b.MouseButton1Click:Connect(cb)
-end
+local Subtitle = Instance.new("TextLabel", Header)
+Subtitle.Position = UDim2.fromOffset(60, 28)
+Subtitle.Size = UDim2.new(1, -180, 0, 16)
+Subtitle.BackgroundTransparency = 1
+Subtitle.Text = "BEST EGG IN STEAL AN EGG"
+Subtitle.TextColor3 = Color3.fromRGB(120, 160, 120)
+Subtitle.Font = Enum.Font.GothamBold
+Subtitle.TextSize = 10
+Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
-local function mkTog(par, txt, def, cb)
-    local f = Instance.new("Frame", par)
-    f.Size = UDim2.new(1, -8, 0, 44)
-    f.BackgroundColor3 = ITEM
-    f.BorderSizePixel = 0
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 7)
-    local l = Instance.new("TextLabel", f)
-    l.Size = UDim2.new(1, -70, 1, 0)
-    l.Position = UDim2.new(0, 12, 0, 0)
-    l.BackgroundTransparency = 1
-    l.Text = txt
-    l.TextColor3 = Color3.fromRGB(255, 255, 255)
-    l.Font = Enum.Font.Gotham
-    l.TextSize = 12
-    l.TextXAlignment = Enum.TextXAlignment.Left
-    local b = Instance.new("TextButton", f)
-    b.Size = UDim2.new(0, 46, 0, 22)
-    b.Position = UDim2.new(1, -54, 0.5, -11)
-    b.BackgroundColor3 = def and GREEN or GRAY
-    b.Text = ""
-    b.AutoButtonColor = false
-    Instance.new("UICorner", b).CornerRadius = UDim.new(1, 0)
-    local d = Instance.new("Frame", b)
-    d.Size = UDim2.new(0, 16, 0, 16)
-    d.Position = def and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
-    d.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", d).CornerRadius = UDim.new(1, 0)
-    local s = def
-    b.MouseButton1Click:Connect(function()
-        s = not s
-        b.BackgroundColor3 = s and GREEN or GRAY
-        d.Position = s and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
-        cb(s)
+-- أيقونة ديسكورد
+local Discord = Instance.new("TextButton", Header)
+Discord.AnchorPoint = Vector2.new(1, 0)
+Discord.Position = UDim2.new(1, -40, 0, 5)
+Discord.Size = UDim2.fromOffset(35, 35)
+Discord.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
+Discord.BorderSizePixel = 0
+Discord.Text = "D"
+Discord.TextColor3 = Color3.fromRGB(255, 255, 255)
+Discord.Font = Enum.Font.GothamBlack
+Discord.TextSize = 18
+Instance.new("UICorner", Discord).CornerRadius = UDim.new(1, 0)
+Discord.MouseButton1Click:Connect(function()
+    setclipboard("https://t.me/YJW_m")
+    Discord.Text = "✓"
+    task.delay(1, function()
+        if Discord.Parent then Discord.Text = "D" end
     end)
-end
-
-local function mkBtn(par, txt, cb)
-    local b = Instance.new("TextButton", par)
-    b.Size = UDim2.new(1, -8, 0, 38)
-    b.BackgroundColor3 = RED
-    b.Text = txt
-    b.TextColor3 = Color3.fromRGB(255, 255, 255)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 12
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 7)
-    b.MouseButton1Click:Connect(cb)
-end
-
-local function mkSlide(par, txt, min, max, def, cb)
-    local f = Instance.new("Frame", par)
-    f.Size = UDim2.new(1, -8, 0, 55)
-    f.BackgroundColor3 = ITEM
-    f.BorderSizePixel = 0
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 7)
-    local l = Instance.new("TextLabel", f)
-    l.Size = UDim2.new(1, -20, 0, 20)
-    l.Position = UDim2.new(0, 12, 0, 6)
-    l.BackgroundTransparency = 1
-    l.Text = txt .. ": " .. def
-    l.TextColor3 = Color3.fromRGB(255, 255, 255)
-    l.Font = Enum.Font.Gotham
-    l.TextSize = 12
-    l.TextXAlignment = Enum.TextXAlignment.Left
-    local bar = Instance.new("Frame", f)
-    bar.Size = UDim2.new(1, -24, 0, 8)
-    bar.Position = UDim2.new(0, 12, 0, 34)
-    bar.BackgroundColor3 = Color3.fromRGB(60, 60, 75)
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
-    local fill = Instance.new("Frame", bar)
-    fill.Size = UDim2.new((def - min) / (max - min), 0, 1, 0)
-    fill.BackgroundColor3 = RED
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
-    local drag = false
-    local function upd(i)
-        local x = math.clamp((i.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-        local v = math.floor(min + (max - min) * x)
-        fill.Size = UDim2.new(x, 0, 1, 0)
-        l.Text = txt .. ": " .. v
-        cb(v)
-    end
-    bar.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            drag = true; upd(i)
-        end
-    end)
-    bar.InputEnded:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            drag = false
-        end
-    end)
-    UIS.InputChanged:Connect(function(i)
-        if drag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-            upd(i)
-        end
-    end)
-end
-
-local function mkPage()
-    local p = Instance.new("Frame", Sc)
-    p.Size = UDim2.new(1, 0, 0, 0)
-    p.AutomaticSize = Enum.AutomaticSize.Y
-    p.BackgroundTransparency = 1
-    p.Visible = false
-    local l = Instance.new("UIListLayout", p)
-    l.Padding = UDim.new(0, 7)
-    return p
-end
-
-local P1 = mkPage()
-local P2 = mkPage()
-local P3 = mkPage()
-local P4 = mkPage()
-local pages = {P1, P2, P3, P4}
-
-local function show(p)
-    for _, x in pairs(pages) do x.Visible = false end
-    p.Visible = true
-end
-
-mkTab("⚡ سرقة", function() show(P1) end)
-mkTab("🎮 لاعب", function() show(P2) end)
-mkTab("🥚 البيض", function() show(P3) end)
-mkTab("⚙️ إعدادات", function() show(P4) end)
-show(P1)
-
--- ===== تبويب السرقة =====
-local autoSteal = false
-local stealSpeed = 0.1
-local stealRange = 1000
-
-mkTog(P1, "⚡ سرقة فورية", false, function(v) autoSteal = v end)
-mkSlide(P1, "سرعة السرقة (ثانية/10)", 1, 10, 1, function(v) stealSpeed = v / 10 end)
-mkSlide(P1, "مدى السرقة", 100, 3000, 1000, function(v) stealRange = v end)
-
-task.spawn(function()
-    while task.wait(stealSpeed) do
-        if autoSteal and P.Character then
-            local hrp = P.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local closest, dist = nil, math.huge
-                for _, o in pairs(workspace:GetDescendants()) do
-                    if o:IsA("BasePart") then
-                        local n = string.lower(o.Name)
-                        if string.find(n, "egg") and not string.find(n, "ui") then
-                            local d = (o.Position - hrp.Position).Magnitude
-                            if d < dist and d < stealRange then
-                                dist = d; closest = o
-                            end
-                        end
-                    end
-                end
-                if closest then
-                    pcall(function()
-                        hrp.CFrame = closest.CFrame + Vector3.new(0, 2, 0)
-                    end)
-                end
-            end
-        end
-    end
 end)
 
-mkBtn(P1, "💰 بيع كل البيض", function()
-    for _, o in pairs(RS:GetDescendants()) do
-        if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
-            if string.find(string.lower(o.Name), "sell") then
-                pcall(function() o:FireServer() end)
-            end
-        end
-    end
-end)
+-- زر الإغلاق
+local Close = Instance.new("TextButton", Header)
+Close.AnchorPoint = Vector2.new(1, 0)
+Close.Position = UDim2.new(1, 0, 0, 10)
+Close.Size = UDim2.fromOffset(28, 28)
+Close.BackgroundColor3 = Color3.fromRGB(30, 33, 30)
+Close.BorderSizePixel = 0
+Close.Text = "✕"
+Close.TextColor3 = Color3.fromRGB(200, 200, 200)
+Close.Font = Enum.Font.GothamBold
+Close.TextSize = 13
+Close.AutoButtonColor = false
+Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 8)
+Close.MouseButton1Click:Connect(function() GUI:Destroy() end)
 
-mkBtn(P1, "🥚 فقس البيض", function()
-    for _, o in pairs(RS:GetDescendants()) do
-        if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
-            if string.find(string.lower(o.Name), "hatch") then
-                pcall(function() o:FireServer() end)
-            end
-        end
-    end
-end)
+-- ===== بطاقة البيضة =====
+local EggCard = Instance.new("Frame", Main)
+EggCard.Position = UDim2.fromOffset(15, 75)
+EggCard.Size = UDim2.new(1, -30, 0, 70)
+EggCard.BackgroundColor3 = Color3.fromRGB(25, 28, 25)
+EggCard.BorderSizePixel = 0
+Instance.new("UICorner", EggCard).CornerRadius = UDim.new(0, 12)
 
--- ===== تبويب اللاعب =====
-local speed = 16
-local jump = 50
-_G.infJ = false
-_G.fly = false
-_G.nc = false
-_G.flySp = 80
+local EggStroke = Instance.new("UIStroke", EggCard)
+EggStroke.Color = Color3.fromRGB(60, 100, 60)
+EggStroke.Thickness = 1
+EggStroke.Transparency = 0.6
 
-mkSlide(P2, "🏃 السرعة", 16, 300, 16, function(v) speed = v end)
-mkSlide(P2, "🦘 القفز", 50, 500, 50, function(v) jump = v end)
-mkTog(P2, "🦅 قفز لا نهائي", false, function(v) _G.infJ = v end)
-mkTog(P2, "✈️ طيران", false, function(v) _G.fly = v end)
-mkSlide(P2, "⚡ سرعة الطيران", 20, 300, 80, function(v) _G.flySp = v end)
-mkTog(P2, "👻 Noclip", false, function(v) _G.nc = v end)
+-- أيقونة البيضة
+local EggIcon = Instance.new("Frame", EggCard)
+EggIcon.Position = UDim2.fromOffset(10, 10)
+EggIcon.Size = UDim2.fromOffset(50, 50)
+EggIcon.BackgroundColor3 = Color3.fromRGB(15, 18, 15)
+EggIcon.BorderSizePixel = 0
+Instance.new("UICorner", EggIcon).CornerRadius = UDim.new(0, 10)
 
-task.spawn(function()
-    while task.wait(0.1) do
-        local c = P.Character
-        if c then
-            local h = c:FindFirstChildOfClass("Humanoid")
-            if h then h.WalkSpeed = speed; h.JumpPower = jump end
-        end
-    end
-end)
+local EggEmoji = Instance.new("TextLabel", EggIcon)
+EggEmoji.Size = UDim2.new(1, 0, 1, 0)
+EggEmoji.BackgroundTransparency = 1
+EggEmoji.Text = "🥚"
+EggEmoji.TextSize = 26
+EggEmoji.Font = Enum.Font.GothamBold
 
-UIS.JumpRequest:Connect(function()
-    if _G.infJ then
-        local c = P.Character
-        if c and c:FindFirstChildOfClass("Humanoid") then
-            c:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-        end
-    end
-end)
+-- نص البيضة
+local EggLabel = Instance.new("TextLabel", EggCard)
+EggLabel.Position = UDim2.fromOffset(70, 10)
+EggLabel.Size = UDim2.new(1, -180, 0, 14)
+EggLabel.BackgroundTransparency = 1
+EggLabel.Text = "BEST EGG"
+EggLabel.TextColor3 = Color3.fromRGB(120, 160, 120)
+EggLabel.Font = Enum.Font.GothamBold
+EggLabel.TextSize = 10
+EggLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-RunService.Stepped:Connect(function()
-    if _G.nc and P.Character then
-        for _, p in pairs(P.Character:GetDescendants()) do
-            if p:IsA("BasePart") then p.CanCollide = false end
-        end
-    end
-end)
+local EggName = Instance.new("TextLabel", EggCard)
+EggName.Position = UDim2.fromOffset(70, 24)
+EggName.Size = UDim2.new(1, -180, 0, 22)
+EggName.BackgroundTransparency = 1
+EggName.Text = "Pure Jellyfish"
+EggName.TextColor3 = Color3.fromRGB(255, 255, 255)
+EggName.Font = Enum.Font.GothamBold
+EggName.TextSize = 16
+EggName.TextXAlignment = Enum.TextXAlignment.Left
 
-task.spawn(function()
-    while task.wait() do
-        if _G.fly then
-            local c = P.Character
-            if c then
-                local hrp = c:FindFirstChild("HumanoidRootPart")
-                if hrp and not hrp:FindFirstChild("YF") then
-                    local g = Instance.new("BodyGyro", hrp); g.Name = "YF"
-                    g.P = 9e4; g.MaxTorque = Vector3.new(9e9,9e9,9e9); g.CFrame = hrp.CFrame
-                    local v = Instance.new("BodyVelocity", hrp); v.Name = "YFV"
-                    v.Velocity = Vector3.new(0,0,0); v.MaxForce = Vector3.new(9e9,9e9,9e9)
-                end
-                if hrp then
-                    local v = hrp:FindFirstChild("YFV")
-                    if v then
-                        local m = Vector3.new(0,0,0)
-                        if UIS:IsKeyDown(Enum.KeyCode.W) then m = m + Cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.S) then m = m - Cam.CFrame.LookVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.A) then m = m - Cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.D) then m = m + Cam.CFrame.RightVector end
-                        if UIS:IsKeyDown(Enum.KeyCode.Space) then m = m + Vector3.new(0,1,0) end
-                        v.Velocity = m * _G.flySp
-                    end
-                end
-            end
-        end
-    end
-end)
+local EggRarity = Instance.new("TextLabel", EggCard)
+EggRarity.Position = UDim2.fromOffset(70, 46)
+EggRarity.Size = UDim2.new(1, -180, 0, 14)
+EggRarity.BackgroundTransparency = 1
+EggRarity.Text = "Secret"
+EggRarity.TextColor3 = Color3.fromRGB(140, 140, 140)
+EggRarity.Font = Enum.Font.Gotham
+EggRarity.TextSize = 11
+EggRarity.TextXAlignment = Enum.TextXAlignment.Left
 
--- ===== تبويب البيض =====
-local esp = false
-local list = {}
+-- القيمة
+local Value = Instance.new("TextLabel", EggCard)
+Value.AnchorPoint = Vector2.new(1, 0)
+Value.Position = UDim2.new(1, -40, 0, 24)
+Value.Size = UDim2.fromOffset(120, 22)
+Value.BackgroundTransparency = 1
+Value.Text = "209.36M"
+Value.TextColor3 = Color3.fromRGB(80, 220, 120)
+Value.Font = Enum.Font.GothamBlack
+Value.TextSize = 16
+Value.TextXAlignment = Enum.TextXAlignment.Right
 
-local function clearE()
-    for _, g in pairs(list) do if g and g.Parent then g:Destroy() end end
-    list = {}
-end
+-- سهم القائمة
+local Arrow = Instance.new("TextLabel", EggCard)
+Arrow.AnchorPoint = Vector2.new(1, 0)
+Arrow.Position = UDim2.new(1, -10, 0, 25)
+Arrow.Size = UDim2.fromOffset(20, 20)
+Arrow.BackgroundTransparency = 1
+Arrow.Text = "⌄"
+Arrow.TextColor3 = Color3.fromRGB(200, 200, 200)
+Arrow.Font = Enum.Font.GothamBold
+Arrow.TextSize = 20
 
-local function addE(part, txt)
-    if list[part] then return end
-    local bb = Instance.new("BillboardGui", part)
-    bb.Size = UDim2.new(0, 170, 0, 40)
-    bb.StudsOffset = Vector3.new(0, 3, 0)
-    bb.AlwaysOnTop = true
-    local l = Instance.new("TextLabel", bb)
-    l.Size = UDim2.new(1, 0, 1, 0)
-    l.BackgroundTransparency = 0.3
-    l.BackgroundColor3 = Color3.fromRGB(0,0,0)
-    l.TextColor3 = Color3.fromRGB(255, 220, 50)
-    l.Font = Enum.Font.GothamBold
-    l.TextSize = 12
-    l.Text = txt
-    l.Parent = bb
-    Instance.new("UICorner", l).CornerRadius = UDim.new(0, 6)
-    list[part] = bb
-end
+-- ===== زر Teleport =====
+local TeleFrame = Instance.new("Frame", Main)
+TeleFrame.Position = UDim2.fromOffset(15, 155)
+TeleFrame.Size = UDim2.new(1, -30, 0, 50)
+TeleFrame.BackgroundColor3 = Color3.fromRGB(25, 28, 25)
+TeleFrame.BorderSizePixel = 0
+Instance.new("UICorner", TeleFrame).CornerRadius = UDim.new(0, 12)
 
-local function scan()
-    for _, o in pairs(workspace:GetDescendants()) do
-        if o:IsA("Model") or o:IsA("BasePart") then
-            local n = string.lower(o.Name)
-            if string.find(n, "egg") and not string.find(n, "ui") then
-                local p = o:IsA("BasePart") and o or o:FindFirstChildWhichIsA("BasePart")
-                if p and not list[p] then
-                    addE(p, "🥚 " .. o.Name)
-                end
-            end
-        end
-    end
-end
+local TeleStroke = Instance.new("UIStroke", TeleFrame)
+TeleStroke.Color = Color3.fromRGB(60, 100, 60)
+TeleStroke.Thickness = 1
+TeleStroke.Transparency = 0.6
 
-mkTog(P3, "👁️ عرض البيض (ESP)", false, function(v)
-    esp = v
-    if not v then clearE() end
-end)
+local TeleBtn = Instance.new("TextButton", TeleFrame)
+TeleBtn.Position = UDim2.fromOffset(10, 10)
+TeleBtn.Size = UDim2.new(0, 130, 0, 30)
+TeleBtn.BackgroundColor3 = Color3.fromRGB(35, 45, 35)
+TeleBtn.BorderSizePixel = 0
+TeleBtn.Text = "TELEGUIADO"
+TeleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleBtn.Font = Enum.Font.GothamBold
+TeleBtn.TextSize = 12
+Instance.new("UICorner", TeleBtn).CornerRadius = UDim.new(0, 8)
 
-task.spawn(function()
-    while task.wait(1.5) do if esp then scan() end end
-end)
+local TeleSub = Instance.new("TextLabel", TeleFrame)
+TeleSub.Position = UDim2.fromOffset(12, 42)
+TeleSub.Size = UDim2.fromOffset(130, 12)
+TeleSub.BackgroundTransparency = 1
+TeleSub.Text = "ONE SHOT"
+TeleSub.TextColor3 = Color3.fromRGB(100, 140, 100)
+TeleSub.Font = Enum.Font.GothamBold
+TeleSub.TextSize = 9
+TeleSub.TextXAlignment = Enum.TextXAlignment.Left
 
-mkBtn(P3, "🚀 روح لأقرب بيضة", function()
+-- Toggle Loop
+local LoopLabel = Instance.new("TextLabel", TeleFrame)
+LoopLabel.AnchorPoint = Vector2.new(1, 0)
+LoopLabel.Position = UDim2.new(1, -70, 0, 15)
+LoopLabel.Size = UDim2.fromOffset(60, 20)
+LoopLabel.BackgroundTransparency = 1
+LoopLabel.Text = "LOOP"
+LoopLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LoopLabel.Font = Enum.Font.GothamBold
+LoopLabel.TextSize = 12
+LoopLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+local LoopBtn = Instance.new("TextButton", TeleFrame)
+LoopBtn.AnchorPoint = Vector2.new(1, 0.5)
+LoopBtn.Position = UDim2.new(1, -10, 0.5, 0)
+LoopBtn.Size = UDim2.fromOffset(48, 24)
+LoopBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+LoopBtn.Text = ""
+LoopBtn.AutoButtonColor = false
+LoopBtn.BorderSizePixel = 0
+Instance.new("UICorner", LoopBtn).CornerRadius = UDim.new(1, 0)
+
+local LoopKnob = Instance.new("Frame", LoopBtn)
+LoopKnob.Size = UDim2.fromOffset(18, 18)
+LoopKnob.Position = UDim2.new(0, 3, 0.5, -9)
+LoopKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Instance.new("UICorner", LoopKnob).CornerRadius = UDim.new(1, 0)
+
+-- ===== الوظائف =====
+local loopEnabled = false
+
+local function getClosestEgg()
     local c = P.Character
-    if not c then return end
+    if not c then return nil end
     local hrp = c:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
+    if not hrp then return nil end
     local cl, d = nil, math.huge
     for _, o in pairs(workspace:GetDescendants()) do
         if o:IsA("BasePart") and string.find(string.lower(o.Name), "egg") then
@@ -419,19 +276,54 @@ mkBtn(P3, "🚀 روح لأقرب بيضة", function()
             if dd < d then d = dd; cl = o end
         end
     end
-    if cl then pcall(function() hrp.CFrame = cl.CFrame + Vector3.new(0, 3, 0) end) end
+    return cl
+end
+
+local function doTeleport()
+    local c = P.Character
+    if not c then return end
+    local hrp = c:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    local egg = getClosestEgg()
+    if egg then
+        pcall(function()
+            hrp.CFrame = egg.CFrame + Vector3.new(0, 3, 0)
+        end)
+    end
+end
+
+TeleBtn.MouseButton1Click:Connect(function()
+    doTeleport()
+    TeleBtn.Text = "TELEPORTED!"
+    task.delay(0.8, function()
+        if TeleBtn.Parent then TeleBtn.Text = "TELEGUIADO" end
+    end)
 end)
 
--- ===== تبويب الإعدادات =====
-mkBtn(P4, "📋 نسخ رابط قناتي", function()
-    setclipboard("https://t.me/YJW_m")
+LoopBtn.MouseButton1Click:Connect(function()
+    loopEnabled = not loopEnabled
+    if loopEnabled then
+        TweenService:Create(LoopBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 220, 120)}):Play()
+        TweenService:Create(LoopKnob, TweenInfo.new(0.15), {Position = UDim2.new(1, -21, 0.5, -9)}):Play()
+    else
+        TweenService:Create(LoopBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 80, 80)}):Play()
+        TweenService:Create(LoopKnob, TweenInfo.new(0.15), {Position = UDim2.new(0, 3, 0.5, -9)}):Play()
+    end
 end)
 
-mkBtn(P4, "🔄 إعادة تشغيل", function()
-    game:GetService("TeleportService"):Teleport(game.PlaceId, P)
+task.spawn(function()
+    while task.wait(0.5) do
+        if loopEnabled then doTeleport() end
+    end
 end)
 
-mkBtn(P4, "❌ إغلاق", function() GUI:Destroy() end)
+-- ===== حركة الظهور =====
+TweenService:Create(Main, TweenInfo.new(.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    GroupTransparency = 0
+}):Play()
+TweenService:Create(scale, TweenInfo.new(.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    Scale = 1
+}):Play()
 
-print("⚡ مطور يوسف Loaded | Steal an Egg")
+print("⚡ مطور يوسف HUB Loaded ✅")
 print("Telegram: https://t.me/YJW_m")
